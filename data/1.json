@@ -1,0 +1,29 @@
+{
+  "data": "./image1.png",
+  "tags": [
+    {
+      "name": "App-Name",
+      "value": "8pin"
+    },
+    {
+      "name": "Version",
+      "value": "0.1"
+    },
+    {
+      "name": "Content-Type",
+      "value": "image/png"
+    },
+    {
+      "name": "title",
+      "value": "Mount Pleasant, SC"
+    },
+    {
+      "name": "location",
+      "value": "33.074600,-79.762800"
+    },
+    {
+      "name": "timestamp",
+      "value": "2022-03-30T19:02:52.716Z"
+    }
+  ]
+}
