@@ -9,6 +9,7 @@
     "arlocal": "^1.1.30"
   },
   "scripts": {
-    "arlocal": "arlocal --persist"
+    "arlocal": "arlocal --persist",
+    "load-data": "node load-dev-data.js"
   }
 }
