@@ -1,0 +1,29 @@
+{
+  "data": "./image2.png",
+  "tags": [
+    {
+      "name": "App-Name",
+      "value": "8pin"
+    },
+    {
+      "name": "Protocol",
+      "value": "8pin"
+    },
+    {
+      "name": "Content-Type",
+      "value": "image/png"
+    },
+    {
+      "name": "Title",
+      "value": "Hiking in Eastport, ME"
+    },
+    {
+      "name": "Location",
+      "value": "44.9061906,-66.9899785"
+    },
+    {
+      "name": "Timestamp",
+      "value": "2021-07-30T19:02:52.716Z"
+    }
+  ]
+}
