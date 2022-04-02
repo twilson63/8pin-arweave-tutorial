@@ -34,18 +34,20 @@ yarn
 
 This guide is broken into sections that take roughly 20 - 30 minutes to complete, depending on your experience. The level of Svelte understanding you should have is the amount taught by the [Svelte Tutorial](https://svelte.dev). If you are not familiar with Svelte then https://svelte.dev/tutorial is a great place to start.
 
-1. Setting up Arlocal (10 - 20 minutes)
-1. Querying ArWeave (25 - 30 minutes)
-1. Discussing the 8pin protocol (10 - 20 minutes)
-1. Integrating Arweave-js (25 - 30 minutes)
-1. Integrating Arweave.app (25 - 30 minutes)
-1. Posting transactions (15 - 20 minutes)
-1. Deploying to Arweave.net (25 - 30 minutes)
+1. [Setting up Arlocal (10 - 20 minutes)](#setting-up-arlocal)
+1. [Querying ArWeave (25 - 30 minutes)](#querying-arweave)
+1. [Discussing the 8pin protocol (5 minutes)](#discussing-8pin-protocol)
+1. [Integrating Arweave-js (25 - 30 minutes)](#integrating-arweave-js)
+1. [Integrating Arweave.app (25 - 30 minutes)](#integrating-arweave-app)
+1. [Posting transactions (15 - 20 minutes)](#posting-transactions)
+1. [Deploying to Arweave.net (25 - 30 minutes)](#deploying-to-arweave.net)
 
 
 ---
 
-## Setting up Arlocal (10 - 20 minutes)
+## Setting up Arlocal
+
+Time: (10 - 20 minutes)
 
 Arlocal is a local server that implements the same API as the Arweave network, this enables you to develop locally then when ready deploy your app to https://arweave.net.
 
@@ -69,7 +71,9 @@ yarn load-data
 
 ---
 
-## Querying ArWeave (25 - 30 minutes)
+## Querying ArWeave
+
+Time: (25 - 30 minutes)
 
 One of the coolest things about arweave is the gateway server supports graphql out of the box! Yes! Out of the box, you can use graphql to query the blockweave! Crazy right? 
 
@@ -157,4 +161,66 @@ We can use tags to create queries on graphql and get access to specific transact
 ---
 
 
-Discussing the 8pin protocol (10 - 20 minutes)
+## Discussing the 8pin protocol (10 - 20 minutes)
+
+Since arweave is a decentralized data storage layer, you can leverage arweave to become you cloud backend, the way you do this, you create a protocol for use by any similar application, the protocol is very much like a schema in a database, it defines the shape of your data for your application. An Arweave transaction is made up of several properties, but the most important properties for our protocol design is the data property and the tags properties. With Arweave you can create tags that can only contain 2048 bits of data, but these tags can be used to enable queryable transactions via graphql. Our goals for the 8pin protocol is to be able to list our transactions on a map, in an efficient way. So our graphql query will need to return location data, a title, we also want to filter the list via timestamps, so we need to make sure timestamps are added to our tags specification.
+
+```
+data: image
+tags:
+  App-Name: '8pin' // constant
+  Protocol: '8pin' // constant
+  Content-Type: 'image/png|jpg|gif' // only support images
+  Title: 'Title of Pin' // limit 20 characters
+  Location: 'lat, lng' // Latitude, Longitude 
+  Timestamp: '' // new Date.toISOString()
+```
+
+With this basic protocol, anyone can drop a pin in any application, and 8pin will be able to find it and show it on a map.
+
+> We want to keep the protocol simple, if you want to make enhancements you can extend, but not change these properties, if you modify any of the properties above, then they will not show in this 8pin application.
+
+### Model Schema
+
+We want to make sure we have a solid validation process to verify transactions coming from the blockweave match our
+protocol, and when we create transactions that they can be signed and posted to the arweave network. This model schema will validate our data f
+
+---
+
+## Integrating Arweave-js
+
+Time: (25 - 30 minutes)
+
+Arweave-js is the official javascript/typescript library for interacting with Arweave Blockweave. 
+
+### install arweave-js
+
+```
+cd app
+yarn add arweave
+```
+
+### arweave access layer
+
+Lets create a arweave access layer for our application, so that all of our components can access the arweave functionality from a single module.
+
+
+---
+
+## Integrating Arweave.app
+
+Time:  (25 - 30 minutes)
+
+---
+
+## Posting transactions
+
+Time:  (15 - 20 minutes)
+
+---
+
+## Deploying to Arweave.net 
+
+Time: (25 - 30 minutes)
+
+
