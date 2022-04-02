@@ -20,7 +20,7 @@ const arweave = Arweave.init({
 
   // add data1
 
-  const tx = await arweave.createTransaction({
+  let tx = await arweave.createTransaction({
     data
   }, w)
   input.tags.map(tag => {
@@ -35,7 +35,7 @@ const arweave = Arweave.init({
   await arweave.api.get('mine')
 
   // add data2
-  const tx = await arweave.createTransaction({
+  tx = await arweave.createTransaction({
     data: data2
   }, w)
   input2.tags.map(tag => {

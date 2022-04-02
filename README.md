@@ -219,10 +219,14 @@ export const activity = async () => {
     query: `
 query {
   transactions (tags: { name: "Protocol", values: ["8pin"] }) {
-    id
-    tags {
-      name
-      value
+    edges {
+      node {
+        id
+        tags {
+          name
+          value
+        }
+      }
     }
   }
 }
@@ -232,6 +236,26 @@ query {
 
 ```
 
+Lets plug this module into our app module
+
+``` svelte
+<script>
+...
+import { activity } from './arweave.js'
+// replace current function with this one
+function getRecentPins() {
+  return activity()
+    .map((_) => pinFromTx(_.node))
+    .filter((x) => x !== null)
+}
+...
+
+</script>
+```
+
+Now when you navigate to the `/explore` page you should see a couple of pins on our map.
+
+---
 
 ### arweave access layer
 
@@ -240,9 +264,51 @@ Lets create a arweave access layer for our application, so that all of our compo
 
 ---
 
-## Integrating Arweave.app
+## Integrating Arweave.app and arConnect
 
 Time:  (25 - 30 minutes)
+
+A digital wallet is an application that holds your keys to interact with a blockchain like network. In Arweave there are many wallets, for our application, we will give our users the option to use ArConnect a web extension wallet or Arweave.app a browser based wallet. ArConnect only works on the desktop and you have to install is as a web extension, Arweave.app is a web wallet, so it will work on the mobile web just fine, you do have the change the tab back to the application once connected.
+
+### Setting up Arweave.app
+
+The first thing we need to do is install the arweave connector modules
+
+``` sh
+yarn add arweave-wallet-connector
+```
+
+Then we can create `arweaveapp.js` file in our `app/src` folder to contain the following code:
+
+``` js
+import { ArweaveWebWallet } from 'arweave-wallet-connector'
+
+const wallet = new ArweaveWebWallet({
+	name: 'Connector Example',
+	logo: 'https://jfbeats.github.io/ArweaveWalletConnector/placeholder.svg'
+})
+
+wallet.setUrl('arweave.app')
+
+export const connect = async () => {
+  const result = await wallet.connect()
+  if (result.ready) {
+    const addr = arweaveWallet.getActiveAddress()
+    address.set(addr)
+    localStorage.setItem('address', addr)
+    localStorage.setItem('wallet', 'arweave.app')
+    return addr
+  }
+  else {
+    return null
+  }
+}
+
+```
+
+### Setting up ArConnect
+
+
 
 ---
 
@@ -250,7 +316,33 @@ Time:  (25 - 30 minutes)
 
 Time:  (15 - 20 minutes)
 
+Now that we have arweave.js installed and a wallet connected, we are ready to create our first pin. Before we do that, lets mint some ar tokens for our local environment.
+
+// https://[arlocal url]/mint/address/[winston]
+
 // arweave.js
+
+Lets build an arweave transaction, we will use arweave.js to build it.
+
+``` js
+
+export async function submitTx(txObj) {
+  const tx = await arweave.createTransaction({
+    data: txObj.data
+  })
+  txObj.tags.map(tag => tx.addTag(tag.name, tag.value))
+  await arweave.transactions.sign(tx)
+  // upload tx
+  let uploader = await arweave.transactions.getUploader(tx)
+  while (!uploader.isComplete) {
+    await uploader.uploadChunk()
+    //console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`)
+  }
+  return
+}
+```
+
+This function will take care of the create, sign and upload of our arweave transaction, and using our pin model we can validate the form entry data and convert to a `transactionObject` this is just a simple object that can be sent to the the submitTx function.
 
 ```
 export const submitTx = async (data) => {

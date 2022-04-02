@@ -5,6 +5,8 @@
   import { pinFromTx } from "./pin.js";
   import Map from "./lib/map.svelte";
   import Marker from "./lib/marker.svelte";
+  import { connect } from "./arweaveapp.js";
+  import { address } from "./store.js";
 
   router.mode.hash();
   const { VITE_ARWEAVE_PROTOCOL, VITE_ARWEAVE_HOST, VITE_ARWEAVE_PORT } =
@@ -137,7 +139,14 @@
       </p>
       <p>8pin currently supports two wallets, Arweave.app and ArConnect</p>
       <div class="flex space-x-8">
-        <button class="btn">Arweave.app</button>
+        <button
+          class="btn"
+          on:click={async () => {
+            const addr = await connect();
+            $address = addr;
+            router.goto("/explore");
+          }}>Arweave.app</button
+        >
         <button class="btn">ArConnect</button>
       </div>
     </section>

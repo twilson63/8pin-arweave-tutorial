@@ -1,3 +1,14 @@
+<script>
+  import { address } from "../store.js";
+
+  function disconnect() {
+    arweaveWallet.disconnect();
+    $address = "";
+    localStorage.removeItem("address");
+    localStorage.removeItem("wallet");
+  }
+</script>
+
 <header class="navbar bg-base-100">
   <div class="flex-1">
     <a class="btn btn-ghost" href="/explore">8pin</a>
@@ -5,6 +16,12 @@
   <div class="flex-none">
     <a class="btn btn-ghost" href="/explore">Explore</a>
     <a class="btn btn-ghost" href="/pins/new">Create Pin</a>
-    <a class="btn btn-ghost" href="/connect">Connect</a>
+    {#if $address !== ""}
+      <button on:click={disconnect} class="btn btn-ghost" href="/disconnect"
+        >Disconnect</button
+      >
+    {:else}
+      <a class="btn btn-ghost" href="/connect">Connect</a>
+    {/if}
   </div>
 </header>
