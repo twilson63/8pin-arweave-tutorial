@@ -200,6 +200,39 @@ cd app
 yarn add arweave
 ```
 
+Lets create a new file called `arweave.js` in the `app/src` folder
+
+``` js
+import Arweave from 'arweave'
+
+// we want to use a `.env` file for arlocal and if not set, then use
+// arweave.net for production
+const arweave = Arweave.init({
+  host: import.meta.env.VITE_ARWEAVE_HOST || 'arweave.net',
+  port: import.meta.env.VITE_ARWEAVE_PORT || 443,
+  protocol: import.meta.env.VITE_ARWEAVE_PROTOCOL || 'https'
+})
+
+export const activity = async () => {
+  // TODO: this function will return the most recent pins
+  return arweave.api.post('graphql', {
+    query: `
+query {
+  transactions (tags: { name: "Protocol", values: ["8pin"] }) {
+    id
+    tags {
+      name
+      value
+    }
+  }
+}
+    `
+  })
+}
+
+```
+
+
 ### arweave access layer
 
 Lets create a arweave access layer for our application, so that all of our components can access the arweave functionality from a single module.
@@ -216,6 +249,23 @@ Time:  (25 - 30 minutes)
 ## Posting transactions
 
 Time:  (15 - 20 minutes)
+
+// arweave.js
+
+```
+export const submitTx = async (data) => {
+  // TODO: create, sign and post or dispatch transaction
+}
+
+export const trackTx = async (id) => {
+  // TODO: This function will wait for the transaction to resolve
+}
+
+export const pinsByOwner = async (addr) => {
+  // this function will list all the pins by an owner
+}
+
+```
 
 ---
 
