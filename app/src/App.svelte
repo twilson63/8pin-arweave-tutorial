@@ -41,7 +41,7 @@
   <Navbar />
   <main class="hero bg-base-100 min-h-screen">
     <section class="hero-content flex-col">
-      <h1 class="text-6xl">Recent Pins</h1>
+      <h1 class="text-6xl">Explore Pins</h1>
       <div class="w-full h-3/4">
         <Map lat={35} lon={-84} zoom={3.5}>
           {#await getRecentPins() then pins}
@@ -62,7 +62,60 @@
   <Navbar />
   <main class="hero bg-base-100 min-h-screen">
     <section class="hero-content flex-col">
-      <h1 class="text-6xl">Drop a Pin</h1>
+      <h1 class="text-6xl">Create a Pin</h1>
+      <div class="w-full">
+        <form>
+          <div class="form-control">
+            <label for="title" class="label">Title</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              class="input input-bordered"
+            />
+          </div>
+          <div class="form-control">
+            <label for="description" class="label">Description</label>
+            <input
+              type="text"
+              id="description"
+              name="description"
+              class="input input-bordered"
+            />
+          </div>
+          <div class="form-control">
+            <label for="photo" class="label">Photo</label>
+            <input
+              type="file"
+              id="photo"
+              name="photo"
+              class="input input-bordered"
+            />
+          </div>
+          <div class="form-control">
+            <label for="location" class="label">Location</label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              class="input input-bordered"
+            />
+          </div>
+          <div class="form-control">
+            <label for="timestamp" class="label">Date/Time</label>
+            <input
+              type="datetime"
+              id="timestamp"
+              name="timestamp"
+              class="input input-bordered"
+            />
+          </div>
+          <div class="mt-8">
+            <button class="btn btn-primary">Submit</button>
+            <a class="btn" href="/explore">Cancel</a>
+          </div>
+        </form>
+      </div>
     </section>
   </main>
 </Route>
@@ -71,6 +124,22 @@
   <main class="hero bg-base-100 min-h-screen">
     <section class="hero-content flex-col">
       <h1 class="text-6xl">View a Pin</h1>
+    </section>
+  </main>
+</Route>
+<Route path="/connect">
+  <main class="hero bg-base-100 min-h-screen">
+    <section class="hero-content flex-col">
+      <h1 class="text-6xl">Connect Wallet</h1>
+      <p>
+        In order to drop a pin and view your pins, you will need to connect to
+        your Arweave Wallet
+      </p>
+      <p>8pin currently supports two wallets, Arweave.app and ArConnect</p>
+      <div class="flex space-x-8">
+        <button class="btn">Arweave.app</button>
+        <button class="btn">ArConnect</button>
+      </div>
     </section>
   </main>
 </Route>
