@@ -6,19 +6,23 @@
       "value": "8pin"
     },
     {
+      "name": "Protocol",
+      "value": "8pin"
+    },
+    {
       "name": "Content-Type",
       "value": "image/png"
     },
     {
-      "name": "title",
+      "name": "Title",
       "value": "Mount Pleasant, SC"
     },
     {
-      "name": "location",
+      "name": "Location",
       "value": "33.074600,-79.762800"
     },
     {
-      "name": "timestamp",
+      "name": "Timestamp",
       "value": "2022-03-30T19:02:52.716Z"
     }
   ]
