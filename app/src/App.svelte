@@ -3,6 +3,8 @@
   import Navbar from "./lib/navbar.svelte";
   import { activity } from "./arweave.js";
   import { pinFromTx } from "./pin.js";
+  import Map from "./lib/map.svelte";
+  import Marker from "./lib/marker.svelte";
 
   router.mode.hash();
   const { VITE_ARWEAVE_PROTOCOL, VITE_ARWEAVE_HOST, VITE_ARWEAVE_PORT } =
@@ -40,13 +42,19 @@
   <main class="hero bg-base-100 min-h-screen">
     <section class="hero-content flex-col">
       <h1 class="text-6xl">Recent Pins</h1>
-      {#await getRecentPins() then pins}
-        {#each pins as pin}
-          <div>{pin.id}</div>
-          <h2 class="text-3xl">{pin.title}</h2>
-          <img src={pin.image_url} />
-        {/each}
-      {/await}
+      <div class="w-full h-3/4">
+        <Map lat={35} lon={-84} zoom={3.5}>
+          {#await getRecentPins() then pins}
+            {#each pins as pin}
+              <Marker
+                lat={pin.location.split(",")[0]}
+                lon={pin.location.split(",")[1]}
+                label={pin.title}
+              />
+            {/each}
+          {/await}
+        </Map>
+      </div>
     </section>
   </main>
 </Route>

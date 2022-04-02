@@ -20,5 +20,7 @@
   },
   "main": "index.js",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "mapbox-gl": "^2.7.1"
+  }
 }
