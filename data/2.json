@@ -15,7 +15,11 @@
     },
     {
       "name": "Title",
-      "value": "Hiking in Eastport, ME"
+      "value": "Hiking"
+    },
+    {
+      "name": "Description",
+      "value": "Summer is a great time to hike in Maine"
     },
     {
       "name": "Location",
