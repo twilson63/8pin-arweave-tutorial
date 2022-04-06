@@ -1,12 +1,14 @@
 <script>
-  import { Route, router } from "tinro";
+  import { Route, router, meta } from "tinro";
   import Navbar from "./lib/navbar.svelte";
-  import { activity } from "./arweave.js";
+  import { activity, submit, waitfor, getTx } from "./arweave.js";
+  import { toArrayBuffer } from "./fs.js";
   import { pinFromTx } from "./pin.js";
   import Map from "./lib/map.svelte";
   import Marker from "./lib/marker.svelte";
   import { connect } from "./arweaveapp.js";
   import { address } from "./store.js";
+  import { writable } from "svelte/store";
 
   router.mode.hash();
   const { VITE_ARWEAVE_PROTOCOL, VITE_ARWEAVE_HOST, VITE_ARWEAVE_PORT } =
@@ -14,6 +16,11 @@
   const arweaveUrl = `${VITE_ARWEAVE_PROTOCOL || "https"}://${
     VITE_ARWEAVE_HOST || "arweave.net"
   }:${VITE_ARWEAVE_PORT || "443"}`;
+
+  let files;
+  let title, description, location, timestamp;
+  let progress = writable(0);
+
   async function getRecentPins() {
     const results = await activity();
     const pins = results
@@ -24,6 +31,70 @@
         return pin;
       });
     return pins;
+  }
+
+  async function getPin(id) {
+    return await getTx(id)
+      .then(pinFromTx)
+      .then((pin) => {
+        pin.image_url = `${arweaveUrl}/${pin.id}`;
+        return pin;
+      });
+  }
+
+  async function publishPin() {
+    // Show Progress
+    router.goto("/publishing");
+    // getData
+    const data = await toArrayBuffer(files[0]);
+
+    // createTags
+    const tags = [
+      { name: "App-Name", value: "8pin" },
+      { name: "Protocol", value: "8pin" },
+      { name: "Title", value: title },
+      { name: "Description", value: description },
+      { name: "Location", value: location },
+      { name: "Timestamp", value: timestamp },
+    ];
+
+    clearData();
+
+    const { ok, uploader, txId } = await submit({ data, tags });
+    if (!ok) {
+      router.goto("/explore");
+      alert(
+        "Could not publish pin, make sure you have connected a wallet and there is sufficent funds to create a pin."
+      );
+    }
+    // show upload progress
+    while (!uploader.isComplete) {
+      await uploader.uploadChunk();
+      progress.set(uploader.uploadedChunks / uploader.totalChunks);
+      console.log(
+        `${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`
+      );
+    }
+    await waitfor(txId);
+
+    router.goto("/explore");
+  }
+
+  function getLocation() {
+    navigator.geolocation.getCurrentPosition(success, error);
+    function success(pos) {
+      location = `${pos.coords.latitude}, ${pos.coords.longitude}`;
+    }
+    function error(err) {
+      alert("Could not find your location: " + err.message);
+    }
+  }
+  function clearData() {
+    title = null;
+    description = null;
+    files = null;
+    location = null;
+    timestamp = null;
   }
 </script>
 
@@ -51,7 +122,11 @@
               <Marker
                 lat={pin.location.split(",")[0]}
                 lon={pin.location.split(",")[1]}
-                label={pin.title}
+                label={`
+<h1 class="text-2xl">${pin.title}</h1>
+<p>${pin.description}</p>  
+<a class="btn btn-ghost" href="/pins/${pin.id}/show">View Pin</a>              
+                `}
               />
             {/each}
           {/await}
@@ -66,7 +141,7 @@
     <section class="hero-content flex-col">
       <h1 class="text-6xl">Create a Pin</h1>
       <div class="w-full">
-        <form>
+        <form on:submit|preventDefault={publishPin}>
           <div class="form-control">
             <label for="title" class="label">Title</label>
             <input
@@ -74,6 +149,7 @@
               id="title"
               name="title"
               class="input input-bordered"
+              bind:value={title}
             />
           </div>
           <div class="form-control">
@@ -83,6 +159,7 @@
               id="description"
               name="description"
               class="input input-bordered"
+              bind:value={description}
             />
           </div>
           <div class="form-control">
@@ -92,16 +169,22 @@
               id="photo"
               name="photo"
               class="input input-bordered"
+              bind:files
             />
           </div>
           <div class="form-control">
             <label for="location" class="label">Location</label>
             <input
+              required
               type="text"
               id="location"
               name="location"
               class="input input-bordered"
+              bind:value={location}
             />
+            <button on:click={getLocation} type="button" class="btn"
+              >Get Current Location</button
+            >
           </div>
           <div class="form-control">
             <label for="timestamp" class="label">Date/Time</label>
@@ -110,7 +193,13 @@
               id="timestamp"
               name="timestamp"
               class="input input-bordered"
+              bind:value={timestamp}
             />
+            <button
+              on:click={() => (timestamp = new Date().toISOString())}
+              type="button"
+              class="btn">Set Current Date/Time</button
+            >
           </div>
           <div class="mt-8">
             <button class="btn btn-primary">Submit</button>
@@ -122,10 +211,19 @@
   </main>
 </Route>
 <Route path="/pins/:id/show">
-  <Navbar />
   <main class="hero bg-base-100 min-h-screen">
     <section class="hero-content flex-col">
-      <h1 class="text-6xl">View a Pin</h1>
+      {#await getPin(meta().params.id) then pin}
+        <h1 class="text-6xl">{pin.title}</h1>
+        <p>{pin.description}</p>
+        <p>{pin.timestamp}</p>
+        <p>{pin.location}</p>
+        <img src={pin.image_url} alt={pin.title} />
+      {/await}
+      <div class="mt-8">
+        <a href="/explore" class="btn btn-primary">8pin</a>
+        <button on:click={() => null}>Share</button>
+      </div>
     </section>
   </main>
 </Route>
@@ -148,6 +246,17 @@
           }}>Arweave.app</button
         >
         <button class="btn">ArConnect</button>
+      </div>
+    </section>
+  </main>
+</Route>
+<Route path="/publishing">
+  <main class="hero bg-base-100 min-h-screen">
+    <section class="hero-content flex-col">
+      <h1 class="text-6xl">Publishing Pin</h1>
+
+      <div>
+        <progress class="w-full" value={$progress} />
       </div>
     </section>
   </main>
