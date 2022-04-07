@@ -20,6 +20,7 @@
       center: [lon, lat],
       zoom,
     });
+    map.addControl(new mapbox.NavigationControl());
     map.on("render", () => map.resize());
   }
 

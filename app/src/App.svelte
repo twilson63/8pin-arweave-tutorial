@@ -103,6 +103,7 @@
 <Route path="/">
   <main class="hero bg-base-100 min-h-screen">
     <section class="hero-content text-center flex-col">
+      <img src="8pin-logo2.png" alt="8pin-logo" />
       <h1 class="text-6xl">8pin</h1>
       <p>Drop a pin anywhere in the world, forever!</p>
       <div>
@@ -115,10 +116,9 @@
 <Route path="/explore">
   <Navbar />
   <main class="hero bg-base-100 min-h-screen">
-    <section class="hero-content flex-col w-full">
-      <h1 class="text-6xl">Explore Pins</h1>
+    <section class="flex flex-col w-full">
       <div class="w-full h-3/4">
-        <Map lat={35} lon={-84} zoom={3.5}>
+        <Map lat={32.818199953647294} lon={-79.8088508501246} zoom={8}>
           {#await getRecentPins() then pins}
             {#each pins as pin}
               <Marker
