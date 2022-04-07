@@ -9,6 +9,7 @@
   import { connect } from "./arweaveapp.js";
   import { address } from "./store.js";
   import { writable } from "svelte/store";
+  import { getCoordinates, getPlace } from "./lib/geocoding.js";
 
   router.mode.hash();
   const { VITE_ARWEAVE_PROTOCOL, VITE_ARWEAVE_HOST, VITE_ARWEAVE_PORT } =
@@ -18,7 +19,7 @@
   }:${VITE_ARWEAVE_PORT || "443"}`;
 
   let files;
-  let title, description, location, timestamp;
+  let title, description, location, timestamp, place;
   let progress = writable(0);
 
   async function getRecentPins() {
@@ -82,8 +83,9 @@
 
   function getLocation() {
     navigator.geolocation.getCurrentPosition(success, error);
-    function success(pos) {
+    async function success(pos) {
       location = `${pos.coords.latitude}, ${pos.coords.longitude}`;
+      place = await getPlace(pos.coords.longitude, pos.coords.latitude);
     }
     function error(err) {
       alert("Could not find your location: " + err.message);
@@ -113,7 +115,7 @@
 <Route path="/explore">
   <Navbar />
   <main class="hero bg-base-100 min-h-screen">
-    <section class="hero-content flex-col">
+    <section class="hero-content flex-col w-full">
       <h1 class="text-6xl">Explore Pins</h1>
       <div class="w-full h-3/4">
         <Map lat={35} lon={-84} zoom={3.5}>
@@ -182,12 +184,15 @@
               class="input input-bordered"
               bind:value={location}
             />
+            <div class="my-4">{place}</div>
             <button on:click={getLocation} type="button" class="btn"
               >Get Current Location</button
             >
           </div>
           <div class="form-control">
             <label for="timestamp" class="label">Date/Time</label>
+            <input type="date" />
+            <input type="time" />
             <input
               type="datetime"
               id="timestamp"
