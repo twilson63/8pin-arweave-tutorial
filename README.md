@@ -14,6 +14,10 @@ We are going to assume you already have some familiarity with Svelte and Tailwin
 
 We will create a protocol for 8pin, the protocol will be common to any geopin drop application on ArWeave, we do not need to use a cloud or even a database, we will use the blockweave to store and access our data. ArWeave enables composability, so that many frontend applications can leverage the same data and render or manage it differently. Composability is a big part of the web3 ecosystem, by defining a re-usable protocol we can create rapid iteration and exploration by building on top of existing building blocks without having to invent from scratch each time.
 
+## Why Arweave for web3?
+
+Arweave is a blockweave, which means its like a blockchain, but arweave supports data of any size for transactions, this is fundamentally different that the current blockchains and creates a unique differentiator between other layer 1 networks. With arweave you get a entire cloud development platform and hosting platform in one, it supports web standards, smart contracts and NFTs, but you don't have to learn any specific languages to leverage these features, if you are a full stack developer and work with technologies like javascript, graphql, APIs, etc. You are more than prepared to develop on the arweave ecosystem.
+
 ## Prerequisites
 
 * Git/Github - https://github.com
@@ -34,6 +38,7 @@ yarn
 
 This guide is broken into sections that take roughly 20 - 30 minutes to complete, depending on your experience. The level of Svelte understanding you should have is the amount taught by the [Svelte Tutorial](https://svelte.dev). If you are not familiar with Svelte then https://svelte.dev/tutorial is a great place to start.
 
+1. [Arweave Developer Tools (10 - 15 minutes)](#arweave-devtools)
 1. [Setting up Arlocal (10 - 20 minutes)](#setting-up-arlocal)
 1. [Querying ArWeave (25 - 30 minutes)](#querying-arweave)
 1. [Discussing the 8pin protocol (5 minutes)](#discussing-8pin-protocol)
@@ -41,6 +46,39 @@ This guide is broken into sections that take roughly 20 - 30 minutes to complete
 1. [Integrating Arweave.app (25 - 30 minutes)](#integrating-arweave-app)
 1. [Posting transactions (15 - 20 minutes)](#posting-transactions)
 1. [Deploying to Arweave.net (25 - 30 minutes)](#deploying-to-arweave.net)
+
+
+---
+
+## Arweave DevTools
+
+* ArLocal
+* ArweaveJS
+* ArweaveWalletConnector
+* ArConnect
+* Arkb
+
+These are a list of tools that we will be using from the Arweave ecosystem to help us with our application, 
+
+arlocal allows us to run a `devnet` local arweave gateway/node, to iterate on our development locally. https://github.com/textury/arlocal
+
+> arlocal is a great tool, I have not found any differences between my interaction with arlocal and the arweave.net, when my code works with arlocal, I am 100% confident it will work on arweave.net.
+
+ArweaveJS is a javascript library that provides us with the APIs to post data on the weave and query data from the weave using `GraphQL`. https://github.com/ArweaveTeam/arweave-js
+
+> arweave js abstacts the JSON RPC api and wraps the commands using a javascript friendly promised based api, so you can generate wallets, create, sign, and post transactions.
+
+ArweaveWalletConnector is a module that allows us to connect with the wallet application called `arweave.app`. https://github.com/jfbeats/ArweaveWalletConnector
+
+> arweave wallet connector interacts with the arweave.app wallet and gives you the connect, disconnect and several wallet connection events.
+
+ArConnect is a module that allows us to connect with the ArConnect browser extension wallet, the most popular wallet in the arweave community. https://github.com/th8ta/ArConnect
+
+> arconnect interacts with the arconnect browser extension, the extension injects arweaveWallet into the browser, so that you can interact with arconnect via the arweaveWallet API.
+
+Arkb is a command-line application that publishes our web application to the permaweb. https://github.com/textury/arkb
+
+> arkb allows you to deploy your web application to the permaweb the layer on top of the arweave network that is managed by arweave gateways, the permaweb uses the tags on the arweave transaction to serve up specific transactions in the web browser. This technology allows you to deploy any web asset as a blockweave transaction.
 
 
 ---
