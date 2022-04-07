@@ -20,6 +20,7 @@
       center: [lon, lat],
       zoom,
     });
+    map.on("render", () => map.resize());
   }
 
   onDestroy(() => {
@@ -43,7 +44,7 @@
 
 <style>
   div {
-    width: 800px;
-    height: 600px;
+    width: 100%;
+    height: 1050px;
   }
 </style>
