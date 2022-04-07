@@ -113,7 +113,7 @@
 <Route path="/explore">
   <Navbar />
   <main class="hero bg-base-100 min-h-screen">
-    <section class="hero-content flex-col">
+    <section class="hero-content flex-col w-full">
       <h1 class="text-6xl">Explore Pins</h1>
       <div class="w-full h-3/4">
         <Map lat={35} lon={-84} zoom={3.5}>
