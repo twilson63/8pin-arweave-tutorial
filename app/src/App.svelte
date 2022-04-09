@@ -41,6 +41,11 @@
       .then((pin) => {
         pin.image_url = `${arweaveUrl}/${pin.id}`;
         return pin;
+      })
+      .then(async (pin) => {
+        const [lat, lng] = pin.location.split(",");
+        pin.place = await getPlace(lng, lat);
+        return pin;
       });
   }
 
@@ -239,7 +244,13 @@
       {#await getPin(meta().params.id) then pin}
         <h1 class="text-6xl">{pin.title}</h1>
         <p>{pin.description}</p>
-        <p>{pin.timestamp}</p>
+        <p>
+          {new Intl.DateTimeFormat("en-US", {
+            dateStyle: "full",
+            timeStyle: "long",
+          }).format(new Date(pin.timestamp))}
+        </p>
+        <p>{pin.place}</p>
         <p>{pin.location}</p>
         <img src={pin.image_url} alt={pin.title} />
       {/await}
