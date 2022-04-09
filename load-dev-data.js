@@ -7,7 +7,9 @@ const input2 = require('./data/2.json')
 const data2 = fs.readFileSync('./data/image2.png')
 
 const arweave = Arweave.init({
-  port: 1984
+  host: 'arlocal.onrender.com',
+  port: '443',
+  protocol: 'https'
 });
 
 (async () => {

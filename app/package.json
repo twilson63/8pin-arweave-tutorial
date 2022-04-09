@@ -22,7 +22,6 @@
   "license": "MIT",
   "dependencies": {
     "arweave": "^1.10.23",
-    "arweave-wallet-connector": "^0.0.26",
-    "mapbox-gl": "^2.7.1"
+    "arweave-wallet-connector": "^0.0.26"
   }
 }
