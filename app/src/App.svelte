@@ -19,8 +19,9 @@
   }:${VITE_ARWEAVE_PORT || "443"}`;
 
   let files;
-  let title, description, location, timestamp, place;
+  let title, description, location, place;
   let progress = writable(0);
+  let timestamp = new Date().toISOString();
 
   async function getRecentPins() {
     const results = await activity();
@@ -91,6 +92,13 @@
       alert("Could not find your location: " + err.message);
     }
   }
+
+  async function getCoords() {
+    const result = await getCoordinates(place);
+    location = `${result.lat}, ${result.lng}`;
+    place = result.place;
+  }
+
   function clearData() {
     title = null;
     description = null;
@@ -141,12 +149,13 @@
   <Navbar />
   <main class="hero bg-base-100 min-h-screen">
     <section class="hero-content flex-col">
-      <h1 class="text-6xl">Create a Pin</h1>
+      <h1 class="text-3xl">Create a Pin</h1>
       <div class="w-full">
-        <form on:submit|preventDefault={publishPin}>
+        <form class="form" on:submit|preventDefault={publishPin}>
           <div class="form-control">
             <label for="title" class="label">Title</label>
             <input
+              required
               type="text"
               id="title"
               name="title"
@@ -157,6 +166,7 @@
           <div class="form-control">
             <label for="description" class="label">Description</label>
             <input
+              required
               type="text"
               id="description"
               name="description"
@@ -167,11 +177,25 @@
           <div class="form-control">
             <label for="photo" class="label">Photo</label>
             <input
+              required
               type="file"
               id="photo"
               name="photo"
               class="input input-bordered"
               bind:files
+            />
+          </div>
+          <div class="form-control">
+            <label for="place" class="label">Place</label>
+            <input
+              required
+              type="text"
+              id="place"
+              name="place"
+              placeholder="Enter place for pin"
+              class="input input-bordered"
+              bind:value={place}
+              on:blur={getCoords}
             />
           </div>
           <div class="form-control">
@@ -191,20 +215,14 @@
           </div>
           <div class="form-control">
             <label for="timestamp" class="label">Date/Time</label>
-            <input type="date" />
-            <input type="time" />
             <input
-              type="datetime"
+              required
+              type="datetime-local"
               id="timestamp"
               name="timestamp"
               class="input input-bordered"
               bind:value={timestamp}
             />
-            <button
-              on:click={() => (timestamp = new Date().toISOString())}
-              type="button"
-              class="btn">Set Current Date/Time</button
-            >
           </div>
           <div class="mt-8">
             <button class="btn btn-primary">Submit</button>

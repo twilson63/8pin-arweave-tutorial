@@ -5,7 +5,11 @@ const url = (endpoint, search_text) =>
 export const getCoordinates = (search_text) =>
   fetch(encodeURI(url('mapbox.places', search_text)))
     .then(res => res.json())
-    .then(res => console.log(res))
+    .then(res => {
+      const [lng, lat] = res.features[0].center
+      const place = res.features[0].place_name
+      return { lng, lat, place }
+    })
 
 export const getPlace = (lng, lat) =>
   fetch(encodeURI(url('mapbox.places', `${lng},${lat}`)))
