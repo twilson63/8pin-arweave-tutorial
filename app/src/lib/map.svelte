@@ -22,6 +22,7 @@
     });
     map.addControl(new mapbox.NavigationControl());
     map.on("render", () => map.resize());
+    window.map = map;
   }
 
   onDestroy(() => {

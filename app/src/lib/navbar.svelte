@@ -1,5 +1,13 @@
 <script>
+  import { getCoordinates } from "./geocoding.js";
   import { address } from "../store.js";
+
+  let place = "";
+
+  async function changeLocation() {
+    const coords = await getCoordinates(place);
+    window.map.setCenter([coords.lng, coords.lat]);
+  }
 
   function disconnect() {
     arweaveWallet.disconnect();
@@ -16,6 +24,12 @@
     </a>
   </div>
   <div class="flex-none">
+    <input
+      class="input input-bordered"
+      bind:value={place}
+      on:blur={changeLocation}
+    />
+
     <a class="btn btn-ghost" href="/explore">Explore</a>
     <a class="btn btn-ghost" href="/pins/new">Create Pin</a>
     {#if $address !== ""}

@@ -65,6 +65,9 @@
       { name: "Timestamp", value: timestamp },
     ];
 
+    const [lat, lng] = location.split(",");
+    window.map.setCenter([lng, lat]);
+
     clearData();
 
     const { ok, uploader, txId } = await submit({ data, tags });
