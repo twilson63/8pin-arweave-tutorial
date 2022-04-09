@@ -403,4 +403,6 @@ export const pinsByOwner = async (addr) => {
 
 Time: (25 - 30 minutes)
 
+Now that we have a functioning application, we want to deploy the app to permaweb, but lets practice on arlocal first. We will be using a cli tool called `arkb`, this command-line tool will deploy.
 
+Arkb is a command-line tool that makes it easy
