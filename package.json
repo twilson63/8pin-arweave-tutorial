@@ -11,5 +11,8 @@
   "scripts": {
     "arlocal": "arlocal --persist",
     "load-data": "node load-dev-data.js"
+  },
+  "dependencies": {
+    "arkb": "^1.1.55"
   }
 }

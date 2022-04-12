@@ -22,6 +22,7 @@
   let title, description, location, place;
   let progress = writable(0);
   let timestamp = new Date().toISOString();
+  let upload = false;
 
   async function getRecentPins() {
     const results = await activity();
@@ -85,8 +86,9 @@
         `${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`
       );
     }
+    upload = true;
     await waitfor(txId);
-
+    upload = false;
     router.goto("/explore");
   }
 
@@ -292,9 +294,14 @@
     <section class="hero-content flex-col">
       <h1 class="text-6xl">Publishing Pin</h1>
 
-      <div>
-        <progress class="w-full" value={$progress} />
+      <div class="bg-base-200 h-16 w-full">
+        <progress class="w-full block h-16" value={$progress} />
       </div>
+      {#if upload}
+        <div>
+          <h3>Verifying Transaction with arweave...</h3>
+        </div>
+      {/if}
     </section>
   </main>
 </Route>
