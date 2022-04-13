@@ -19,7 +19,7 @@
   }:${VITE_ARWEAVE_PORT || "443"}`;
 
   let files;
-  let title, description, location, place;
+  let title, description, location, place, error;
   let progress = writable(0);
   let timestamp = new Date().toISOString();
   let upload = false;
@@ -67,29 +67,32 @@
     ];
 
     const [lat, lng] = location.split(",");
-    window.map.setCenter([lng, lat]);
+    window.map.setCenter([Number(lng), Number(lat)]);
 
-    clearData();
-
-    const { ok, uploader, txId } = await submit({ data, tags });
-    if (!ok) {
+    try {
+      const { ok, uploader, txId } = await submit({ data, tags });
+      if (!ok) {
+        router.goto("/explore");
+        alert(
+          "Could not publish pin, make sure you have connected a wallet and there is sufficent funds to create a pin."
+        );
+      }
+      clearData();
+      // show upload progress
+      while (!uploader.isComplete) {
+        await uploader.uploadChunk();
+        progress.set(uploader.uploadedChunks / uploader.totalChunks);
+        console.log(
+          `${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`
+        );
+      }
+      upload = true;
+      await waitfor(txId);
+      upload = false;
       router.goto("/explore");
-      alert(
-        "Could not publish pin, make sure you have connected a wallet and there is sufficent funds to create a pin."
-      );
+    } catch (e) {
+      error = "Could not publish transaction, please verify you have enough AR";
     }
-    // show upload progress
-    while (!uploader.isComplete) {
-      await uploader.uploadChunk();
-      progress.set(uploader.uploadedChunks / uploader.totalChunks);
-      console.log(
-        `${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`
-      );
-    }
-    upload = true;
-    await waitfor(txId);
-    upload = false;
-    router.goto("/explore");
   }
 
   function getLocation() {
@@ -292,15 +295,32 @@
 <Route path="/publishing">
   <main class="hero bg-base-100 min-h-screen">
     <section class="hero-content flex-col">
-      <h1 class="text-6xl">Publishing Pin</h1>
-
-      <div class="bg-base-200 h-16 w-full">
-        <progress class="w-full block h-16" value={$progress} />
-      </div>
-      {#if upload}
-        <div>
-          <h3>Verifying Transaction with arweave...</h3>
+      {#if error}
+        <h1 class="text-6xl">Error Publishing Pin</h1>
+        <div class="alert alert-error">
+          {error}
         </div>
+        <div class="flex space-x-4">
+          <a
+            on:click={() => (error = null)}
+            class="btn btn-primary"
+            href="/pins/new">Try Again</a
+          >
+          <a on:click={() => (error = null)} class="btn" href="/explore"
+            >Explore</a
+          >
+        </div>
+      {:else}
+        <h1 class="text-6xl">Publishing Pin</h1>
+
+        <div class="bg-base-200 h-16 w-full">
+          <progress class="w-full block h-16" value={$progress} />
+        </div>
+        {#if upload}
+          <div>
+            <h3>Verifying Transaction with arweave...</h3>
+          </div>
+        {/if}
       {/if}
     </section>
   </main>

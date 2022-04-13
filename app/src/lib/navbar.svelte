@@ -25,7 +25,8 @@
   </div>
   <div class="flex-none">
     <input
-      class="input input-bordered"
+      class="input input-bordered hidden md:block"
+      placeholder="Enter a place..."
       bind:value={place}
       on:blur={changeLocation}
     />

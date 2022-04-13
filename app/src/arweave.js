@@ -52,15 +52,15 @@ query {
 }
 
 export const submit = async ({ data, tags }) => {
+  const tx = await arweave.createTransaction({ data })
+  tags.map(({ name, value }) => tx.addTag(name, value))
   try {
-    const tx = await arweave.createTransaction({ data })
-    tags.map(({ name, value }) => tx.addTag(name, value))
     await arweave.transactions.sign(tx)
     const uploader = await arweave.transactions.getUploader(tx)
     return { ok: true, uploader, txId: tx.id }
   } catch (e) {
-    console.log(e.message)
-    return { ok: false, message: e.message }
+    console.log(e)
+    return { ok: false, tx, message: e.message }
   }
 }
 
