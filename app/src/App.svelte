@@ -7,11 +7,14 @@
   import Map from "./lib/map.svelte";
   import Marker from "./lib/marker.svelte";
   import { connect } from "./arweaveapp.js";
+  import * as arconnect from "./arconnect";
+
   import { address } from "./store.js";
   import { writable } from "svelte/store";
   import { getCoordinates, getPlace } from "./lib/geocoding.js";
 
   router.mode.hash();
+
   const { VITE_ARWEAVE_PROTOCOL, VITE_ARWEAVE_HOST, VITE_ARWEAVE_PORT } =
     import.meta.env;
   const arweaveUrl = `${VITE_ARWEAVE_PROTOCOL || "https"}://${
@@ -23,8 +26,17 @@
   let progress = writable(0);
   let timestamp = new Date().toISOString();
   let upload = false;
+  let lat = 32.7876;
+  let lng = -79.9403;
+  let once = false;
 
   async function getRecentPins() {
+    // workaround
+    if (!once) {
+      getLocation();
+      once = true;
+    }
+
     const results = await activity();
     const pins = results
       .map((_) => pinFromTx(_.node))
@@ -66,8 +78,9 @@
       { name: "Timestamp", value: timestamp },
     ];
 
-    const [lat, lng] = location.split(",");
-    window.map.setCenter([Number(lng), Number(lat)]);
+    const coords = location.split(",");
+    lat = Number(coords[0]);
+    lng = Number(coords[1]);
 
     try {
       const { ok, uploader, txId } = await submit({ data, tags });
@@ -100,6 +113,8 @@
     async function success(pos) {
       location = `${pos.coords.latitude}, ${pos.coords.longitude}`;
       place = await getPlace(pos.coords.longitude, pos.coords.latitude);
+      lat = pos.coords.latitude;
+      lng = pos.coords.longitude;
     }
     function error(err) {
       alert("Could not find your location: " + err.message);
@@ -139,7 +154,7 @@
   <main class="hero bg-base-100 min-h-screen">
     <section class="flex flex-col w-full">
       <div class="w-full h-3/4">
-        <Map lat={32.818199953647294} lon={-79.8088508501246} zoom={8}>
+        <Map {lat} lon={lng} zoom={8}>
           {#await getRecentPins() then pins}
             {#each pins as pin}
               <Marker
@@ -235,6 +250,7 @@
               name="timestamp"
               class="input input-bordered"
               bind:value={timestamp}
+              on:change={(e) => (e.target.value = e.target.value.substr(0, 16))}
             />
           </div>
           <div class="mt-8">
@@ -287,13 +303,22 @@
             router.goto("/explore");
           }}>Arweave.app</button
         >
-        <button class="btn">ArConnect</button>
+        <button
+          class="btn"
+          on:click={async () => {
+            $address = await arconnect.connect();
+            console.log($address);
+            if ($address !== "") {
+              router.goto("/explore");
+            }
+          }}>ArConnect</button
+        >
       </div>
     </section>
   </main>
 </Route>
 <Route path="/publishing">
-  <main class="hero bg-base-100 min-h-screen">
+  <main class="hero bg-base-100 min-h-screen min-w-screen">
     <section class="hero-content flex-col">
       {#if error}
         <h1 class="text-6xl">Error Publishing Pin</h1>
@@ -313,7 +338,7 @@
       {:else}
         <h1 class="text-6xl">Publishing Pin</h1>
 
-        <div class="bg-base-200 h-16 w-full">
+        <div class="bg-base-200 h-16 w-full md:w-full">
           <progress class="w-full block h-16" value={$progress} />
         </div>
         {#if upload}

@@ -357,9 +357,35 @@ ArConnect is the web browser extension wallet, similar to metamask, this wallet,
 
 #### ArConnect Permissions
 
+With ArConnect, when you connect as an app you can indicate the permissions you would like to access for the wallet.
+
+Here are some of the permissions we will be using: `['ACCESS_ADDRESS', 'SIGN_TRANSACTION', 'ENCRYPT', 'DECRYPT']`
+
+You can find out more about all the permissions for ArConnect in their project readme (https://github.com/th8ta/ArConnect#permissions)
+
+
 #### ArConnect AppInfo
 
+AppInfo is the second argument to the connect method, this is where you can show the name and logo of your app within the wallet view. It is optional, but can provide value to give the user observability to connect the wallet with the dapp.
 
+``` js
+await arweaveWallet.connect(permissions, {name: '8pin', logo: 'url'})
+```
+
+#### ArConnect Module
+
+Lets create our arconnect module:
+
+``` js
+
+export const connect = async () => {
+  if (!arweaveWallet) {
+    alert('ArConnect is not installed!')
+  }
+  await arweaveWallet.connect(['ACCESS_ADDRESS', 'SIGN_TRANSACTION', 'ENCRYPT', 'DECRYPT'], { name: '8pin' })
+  return await arweaveWallet.getPublicAddress()
+}
+```
 
 ---
 
@@ -395,18 +421,44 @@ export async function submitTx(txObj) {
 
 This function will take care of the create, sign and upload of our arweave transaction, and using our pin model we can validate the form entry data and convert to a `transactionObject` this is just a simple object that can be sent to the the submitTx function.
 
-```
-export const submitTx = async (data) => {
-  // TODO: create, sign and post or dispatch transaction
+``` js
+export const submit = async ({ data, tags }) => {
+  const tx = await arweave.createTransaction({ data })
+  tags.map(({ name, value }) => tx.addTag(name, value))
+  try {
+    await arweave.transactions.sign(tx)
+    const uploader = await arweave.transactions.getUploader(tx)
+    return { ok: true, uploader, txId: tx.id }
+  } catch (e) {
+    console.log(e)
+    return { ok: false, tx, message: e.message }
+  }
 }
 
-export const trackTx = async (id) => {
-  // TODO: This function will wait for the transaction to resolve
+export const waitfor = async (txId) => {
+  let count = 0;
+  let foundPost = null;
+
+  while (!foundPost) {
+    count += 1;
+    console.log(`attempt ${count}`);
+    await delay(2000 * count);
+    const result = await arweave.api.post('graphql', {
+      query: `
+query {
+  transaction(id: "${txId}") {
+    id
+  }
+}
+    `});
+    foundPost = result.data.data.transaction.id === txId;
+    if (count > 10) {
+      break; // could not find post
+    }
+  }
+  return foundPost
 }
 
-export const pinsByOwner = async (addr) => {
-  // this function will list all the pins by an owner
-}
 
 ```
 
@@ -419,3 +471,32 @@ Time: (25 - 30 minutes)
 Now that we have a functioning application, we want to deploy the app to permaweb, but lets practice on arlocal first. We will be using a cli tool called `arkb`, this command-line tool will deploy.
 
 Arkb is a command-line tool that makes it easy
+
+
+``` sh
+arkb deploy app/dist --wallet mywallet.json --gateway http://localhost:1984
+```
+
+## Production Deploy
+
+``` sh
+arkb deploy app/dist --wallet mywallet.json
+```
+
+---
+
+## Summary
+
+Congrats! You have reached the end of the Arweave 8pin dapp tutorial, in this tutorial you should have learned:
+
+* how to use arlocal for development
+* how to use graphql to query the blockweave
+* how to work with arweave-js to create, sign and post a transaction
+* how to think in terms of protocols as data models
+* how to use arweave.app as a wallet
+* how to use arconnect as a wallet
+* how to submit a 8pin transaction and wait for the response
+* how to deploy to arlocal
+* how to deploy to production
+
+There is a lot more to discover with arweave, hopefully this tutorial and workshop, gives you many ideas on how to innovate with the permaweb the new scalable decentralized app development platform.
