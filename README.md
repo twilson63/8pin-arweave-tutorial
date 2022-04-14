@@ -4,6 +4,10 @@
 
 ---
 
+## Who is this tutorial for?
+
+If you are familiar with Arweave and are comfortable with javascript, this tutorial will guide you through some of the arweave development components to deliver a permaweb dapp. To learn more about Arweave, get started at https://www.arweave.org/.
+
 Before we dive in, lets have a quick discussion about what we are trying to achieve.
 
 ## A geopin drop application `8pin`
@@ -23,6 +27,9 @@ Arweave is a blockweave, which means its like a blockchain, but arweave supports
 * Git/Github - https://github.com
 * NodeJS/npm/Javascript - https://nodejs.com
 * JSON/GraphQL - https://graphql.org
+* Mapbox account - https://www.mapbox.com/
+
+> Create a free mapbox account to take advantage of the mapping and geocoding features. You will need a free developer public API key.
 
 ## Setup
 
@@ -345,6 +352,12 @@ export const connect = async () => {
 ```
 
 ### Setting up ArConnect
+
+ArConnect is the web browser extension wallet, similar to metamask, this wallet, holds the users keys in an extension and injects the `arweaveWallet` object into the window object. So you can tell if ArConnect is available by checking that object.
+
+#### ArConnect Permissions
+
+#### ArConnect AppInfo
 
 
 
