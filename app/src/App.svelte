@@ -286,8 +286,10 @@
         <a href="/explore" class="btn btn-primary">8pin</a>
         <a
           class="btn"
-          href="https://twitter.com/intent/tweet?text=Check%20out%20my%20pin&url={window
-            .location.href}"
+          href="https://twitter.com/intent/tweet?text=Check%20out%20my%20pin&url={window.location.href.replace(
+            '#',
+            '%23'
+          )}"
         >
           Tweet</a
         >
