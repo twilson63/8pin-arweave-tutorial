@@ -136,6 +136,10 @@
   }
 </script>
 
+<svelte:head>
+  <link rel="canonical" />
+</svelte:head>
+
 <Route path="/">
   <main class="hero bg-base-100 min-h-screen">
     <section class="hero-content text-center flex-col">
@@ -278,9 +282,15 @@
         <p>{pin.location}</p>
         <img src={pin.image_url} alt={pin.title} />
       {/await}
-      <div class="mt-8">
+      <div class="mt-8 space-x-8">
         <a href="/explore" class="btn btn-primary">8pin</a>
-        <button on:click={() => null}>Share</button>
+        <a
+          class="btn"
+          href="https://twitter.com/intent/tweet?text=Check%20out%20my%20pin&url={window
+            .location.href}"
+        >
+          Tweet</a
+        >
       </div>
     </section>
   </main>
