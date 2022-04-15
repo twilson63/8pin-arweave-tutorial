@@ -20,7 +20,7 @@ We will create a protocol for 8pin, the protocol will be common to any geopin dr
 
 ## Why Arweave for web3?
 
-Arweave is a blockweave, which means its like a blockchain, but arweave supports data of any size for transactions, this is fundamentally different that the current blockchains and creates a unique differentiator between other layer 1 networks. With arweave you get a entire cloud development platform and hosting platform in one, it supports web standards, smart contracts and NFTs, but you don't have to learn any specific languages to leverage these features, if you are a full stack developer and work with technologies like javascript, graphql, APIs, etc. You are more than prepared to develop on the arweave ecosystem.
+Arweave is a blockweave, which means its like a blockchain, but Arweave supports data of any size for transactions, this is fundamentally different that the current blockchains and creates a unique differentiator between other layer 1 networks. With Arweave you get an entire cloud development and hosting platform in one, Arweave supports web standards, smart contracts and NFTs, and you can use almost any language to leverage these features, if you are a full stack developer and work with technologies like javascript, graphql, APIs, etc. You are more than prepared to develop on the Arweave ecosystem.
 
 ## Prerequisites
 
@@ -41,11 +41,24 @@ Open a terminal window in the project directory and run:
 yarn
 ```
 
+Create a `.env`, the `.env` file will setup our environment settings for the application, we need to specify the following settings:
+
+> NOTE: make sure you create your `.env` file in the `app` directory.
+
+`app/.env`
+
+```
+VITE_MAPBOX=MAPBOX_TOKEN_HERE
+VITE_ARWEAVE_PORT=1984
+VITE_ARWEAVE_PROTOCOL=http
+VITE_ARWEAVE_HOST=localhost
+```
+
 ## Topics
 
 This guide is broken into sections that take roughly 20 - 30 minutes to complete, depending on your experience. The level of Svelte understanding you should have is the amount taught by the [Svelte Tutorial](https://svelte.dev). If you are not familiar with Svelte then https://svelte.dev/tutorial is a great place to start.
 
-1. [Arweave Developer Tools (10 - 15 minutes)](#arweave-devtools)
+1. [Arweave Developer Tools Review (5 minutes)](#arweave-devtools)
 1. [Setting up Arlocal (10 - 20 minutes)](#setting-up-arlocal)
 1. [Querying ArWeave (25 - 30 minutes)](#querying-arweave)
 1. [Discussing the 8pin protocol (5 minutes)](#discussing-8pin-protocol)
