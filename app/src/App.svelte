@@ -134,6 +134,11 @@
     location = null;
     timestamp = null;
   }
+
+  function handleCreatePin(e) {
+    location = `${e.detail.lat}, ${e.detail.lng}`;
+    router.goto("/pins/new");
+  }
 </script>
 
 <svelte:head>
@@ -148,7 +153,9 @@
       <p>Drop a pin anywhere in the world, forever!</p>
       <div>
         <a class="btn btn-primary" href="/explore">Explore</a>
+        <!--
         <a class="btn" href="/pins/new">Drop a Pin</a>
+          -->
       </div>
     </section>
   </main>
@@ -158,7 +165,7 @@
   <main class="hero bg-base-100 min-h-screen">
     <section class="flex flex-col w-full">
       <div class="w-full h-3/4">
-        <Map {lat} lon={lng} zoom={8}>
+        <Map {lat} lon={lng} zoom={8} on:droppin={handleCreatePin}>
           {#await getRecentPins() then pins}
             {#each pins as pin}
               <Marker
@@ -173,6 +180,7 @@
             {/each}
           {/await}
         </Map>
+        <div>Right-Click on the Map to Drop a Pin</div>
       </div>
     </section>
   </main>
@@ -217,6 +225,7 @@
               bind:files
             />
           </div>
+          <!--
           <div class="form-control">
             <label for="place" class="label">Place</label>
             <input
@@ -230,6 +239,7 @@
               on:blur={getCoords}
             />
           </div>
+          -->
           <div class="form-control">
             <label for="location" class="label">Location</label>
             <input
@@ -240,7 +250,9 @@
               class="input input-bordered"
               bind:value={location}
             />
+            <!--
             <div class="my-4">{place}</div>
+            -->
             <button on:click={getLocation} type="button" class="btn"
               >Get Current Location</button
             >

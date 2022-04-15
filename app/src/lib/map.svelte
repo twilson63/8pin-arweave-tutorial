@@ -1,6 +1,8 @@
 <script>
-  import { onDestroy, setContext } from "svelte";
+  import { onDestroy, setContext, createEventDispatcher } from "svelte";
   import { mapbox, key } from "./mapbox.js";
+
+  const dispatch = createEventDispatcher();
 
   setContext(key, {
     getMap: () => map,
@@ -22,6 +24,9 @@
     });
     map.addControl(new mapbox.NavigationControl());
     map.on("render", () => map.resize());
+    map.on("contextmenu", (e) => {
+      dispatch("droppin", e.lngLat);
+    });
     window.map = map;
   }
 
