@@ -83,12 +83,15 @@
     lng = Number(coords[1]);
 
     try {
-      const { ok, uploader, txId } = await submit({ data, tags });
+      const { ok, uploader, txId, message } = await submit({ data, tags });
       if (!ok) {
-        router.goto("/explore");
-        alert(
-          "Could not publish pin, make sure you have connected a wallet and there is sufficent funds to create a pin."
-        );
+        if (message.includes("jwk")) {
+          error =
+            "Could not find wallet, please make sure your wallet is connected.";
+        } else {
+          error = message;
+        }
+        return;
       }
       clearData();
       // show upload progress
@@ -100,11 +103,17 @@
         );
       }
       upload = true;
+      console.log("tx", txId);
       await waitfor(txId);
       upload = false;
       router.goto("/explore");
     } catch (e) {
-      error = "Could not publish transaction, please verify you have enough AR";
+      if (e.message.includes("410")) {
+        error =
+          "Could not publish transaction, please verify you have enough AR";
+      }
+      console.log(e);
+      router.goto("/explore");
     }
   }
 
@@ -172,9 +181,13 @@
                 lat={pin.location.split(",")[0]}
                 lon={pin.location.split(",")[1]}
                 label={`
-<h1 class="text-2xl">${pin.title}</h1>
-<p>${pin.description}</p>  
-<a class="btn btn-ghost" href="/pins/${pin.id}/show">View Pin</a>              
+<div class="my-8 card">
+  <h1 class="card-title">${pin.title}</h1>
+  <p class="card-body">${pin.description}</p>  
+  <div class="card-actions justify-center">
+    <a class="btn btn-ghost" href="/pins/${pin.id}/show">View Pin</a> 
+  </div>
+</div>             
                 `}
               />
             {/each}
@@ -223,6 +236,7 @@
               name="photo"
               class="input input-bordered"
               bind:files
+              accept="image/png, image/jpeg, image/gif, image/jpg"
             />
           </div>
           <!--
@@ -295,9 +309,16 @@
         <img src={pin.image_url} alt={pin.title} />
       {/await}
       <div class="mt-8 space-x-8">
-        <a href="/explore" class="btn btn-primary">8pin</a>
+        <button
+          on:click={() => {
+            window.scrollTo(0, 0);
+            router.goto("/explore");
+          }}
+          class="btn btn-primary">8pin</button
+        >
         <a
           class="btn"
+          target="_blank"
           href="https://twitter.com/intent/tweet?text=Check%20out%20my%20pin&url={window.location.href.replace(
             '#',
             '%23'
