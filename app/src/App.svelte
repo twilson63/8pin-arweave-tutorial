@@ -51,6 +51,7 @@
 
   async function getPin(id) {
     return await getTx(id)
+      .then((res) => (res !== null ? res : Promise.reject("Not Found!")))
       .then(pinFromTx)
       .then((pin) => {
         pin.image_url = `${arweaveUrl}/${pin.id}`;
@@ -60,6 +61,9 @@
         const [lat, lng] = pin.location.split(",");
         pin.place = await getPlace(lng, lat);
         return pin;
+      })
+      .catch((e) => {
+        router.goto("/404");
       });
   }
 
@@ -442,4 +446,17 @@
 </Route>
 <Route path="/about">
   <About />
+</Route>
+<Route path="/404">
+  <Navbar />
+  <main class="hero bg-base-100 min-h-screen">
+    <section class="hero-content flex-col">
+      <div class="alert alert-warning">
+        <h1 class="text-6xl">Pin Not Found!</h1>
+      </div>
+      <div class="mt-8">
+        <a class="btn btn-primary" href="/explore">Explore</a>
+      </div>
+    </section>
+  </main>
 </Route>

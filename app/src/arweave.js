@@ -9,31 +9,32 @@ const arweave = Arweave.init({
 })
 
 export const getTx = async (id) => {
-  console.log('id', id)
-  return arweave.api.post('graphql', {
-    query: `
-query {
-  transaction(id: "${id}") {
-    id
-    owner {
-      address
+  try {
+    const result = await arweave.api.post('graphql', {
+      query: `
+  query {
+    transaction(id: "${id}") {
+      id
+      owner {
+        address
+      }
+      tags {
+        name
+        value
+      }
     }
-    tags {
-      name
-      value
-    }
+  }`
+    })
+    return result?.data?.data?.transaction
+  } catch (e) {
+    return null
   }
-}`
-  }).then(res => {
-    console.log(res)
-    return res.data.data.transaction
-  })
 }
 
 export const activity = async () => {
-  // TODO: this function will return the most recent pins
-  return arweave.api.post('graphql', {
-    query: `
+  try {
+    const result = await arweave.api.post('graphql', {
+      query: `
 query {
   transactions (tags: { name: "Protocol", values: ["8pin"] }) {
     edges {
@@ -48,10 +49,26 @@ query {
   }
 }
     `
-  }).then(res => res.data.data.transactions.edges)
+    })
+    return result?.data?.data?.transactions?.edges
+  } catch (e) {
+    return []
+  }
+
+
 }
 
+/** 
+ * Possible Errors
+ * 1. Wallet not Connected!
+ * 2. Not enough AR
+ * 3. Unable to sign transaction
+ */
 export const submit = async ({ data, tags }) => {
+  // 1. Wallet not Connected!
+  if (window?.arweaveWallet === undefined) {
+    return { ok: false, message: 'Wallet not connected!' }
+  }
 
   const tx = await arweave.createTransaction({ data })
   tags.map(({ name, value }) => tx.addTag(name, value))
