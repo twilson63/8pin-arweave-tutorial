@@ -189,9 +189,11 @@
                 lat={pin.location.split(",")[0]}
                 lon={pin.location.split(",")[1]}
                 label={`
-<div class="my-8 card">
-  <h1 class="card-title">${pin.title}</h1>
-  <p class="card-body">${pin.description}</p>  
+<div class="m-4 card w-96 bg-base-200 shadow-xl">
+  <div class="card-body">
+    <h1 class="card-title text-center">${pin.title}</h1>
+    <p>${pin.description}</p>  
+  </div>
   <div class="card-actions justify-center">
     <a class="btn btn-ghost" href="/pins/${pin.id}/show">View Pin</a> 
   </div>
@@ -293,7 +295,13 @@
           </div>
           <div class="mt-8">
             <button class="btn btn-primary">Submit</button>
-            <a class="btn" href="/explore">Cancel</a>
+            <button
+              on:click={() => {
+                window.scrollTo(0, 0);
+                router.goto("/explore");
+              }}
+              class="btn">Cancel</button
+            >
           </div>
         </form>
       </div>
