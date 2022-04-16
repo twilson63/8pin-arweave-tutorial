@@ -1,6 +1,7 @@
 <script>
   import { Route, router, meta } from "tinro";
   import Navbar from "./lib/navbar.svelte";
+  import About from "./about.svelte";
   import { activity, submit, waitfor, getTx } from "./arweave.js";
   import { toArrayBuffer } from "./fs.js";
   import { pinFromTx } from "./pin.js";
@@ -438,4 +439,7 @@
       {/if}
     </section>
   </main>
+</Route>
+<Route path="/about">
+  <About />
 </Route>
