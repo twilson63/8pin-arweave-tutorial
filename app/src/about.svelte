@@ -8,20 +8,20 @@
   <section class="hero-content">
     <div>
       <h1 class="text-4xl">About 8pin</h1>
-      <p class="mt-8 w-1/2">
+      <p class="mt-8 md:w-1/2">
         8pin is a permaweb app and tutorial to showcase the basic functionality
         of an arweave development platform. Using common web development
         toolkits and graphql, you can build completely decentralized
         applications that are deployed on the permaweb forever.
       </p>
-      <p class="mt-4 w-1/2">
+      <p class="mt-4 md:w-1/2">
         Interested in building an arweave dapp, checkout this tutorial. And then
         register for the build program and get started. <a
           class="underline"
           href="https://arweave.build">Arweave.build</a
         >
       </p>
-      <p class="mt-4 w-1/2">
+      <p class="mt-4 md:w-1/2">
         This project was sponsored by <a
           class="underline"
           href="https://twitter.com/onlyarweave">@onlyarweave</a

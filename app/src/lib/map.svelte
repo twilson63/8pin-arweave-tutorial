@@ -27,7 +27,34 @@
     map.on("contextmenu", (e) => {
       dispatch("droppin", e.lngLat);
     });
+    init_ios_context_menu();
+
     window.map = map;
+
+    function init_ios_context_menu() {
+      let iosTimeout = null;
+      let clearIosTimeout = () => {
+        clearTimeout(iosTimeout);
+      };
+
+      map.on("touchstart", (e) => {
+        if (e.originalEvent.touches.length > 1) {
+          return;
+        }
+        iosTimeout = setTimeout(() => {
+          dispatch("droppin", e.lngLat);
+        }, 500);
+      });
+      map.on("touchend", clearIosTimeout);
+      map.on("touchcancel", clearIosTimeout);
+      map.on("touchmove", clearIosTimeout);
+      map.on("pointerdrag", clearIosTimeout);
+      map.on("pointermove", clearIosTimeout);
+      map.on("moveend", clearIosTimeout);
+      map.on("gesturestart", clearIosTimeout);
+      map.on("gesturechange", clearIosTimeout);
+      map.on("gestureend", clearIosTimeout);
+    }
   }
 
   onDestroy(() => {

@@ -333,9 +333,12 @@
 </Route>
 <Route path="/pins/:id/show">
   <main class="hero bg-base-100 min-h-screen">
-    <section class="hero-content space-x-8">
+    <section class="hero-content flex-col md:flex-row space-x-8">
       {#await getPin(meta().params.id) then pin}
-        <div class="card w-1/2 bg-base-100 shadow-xl p-4">
+        <figure class="md:w-1/2">
+          <img class=" rounded-md" src={pin.image_url} alt={pin.title} />
+        </figure>
+        <div class="card md:w-1/2 bg-base-100 shadow-xl p-4">
           <h1 class="card-title">{pin.title}</h1>
           <div class="card-body">
             <p>{pin.description}</p>
@@ -368,9 +371,6 @@
             >
           </div>
         </div>
-        <figure class="w-1/2">
-          <img class=" rounded-md" src={pin.image_url} alt={pin.title} />
-        </figure>
       {/await}
     </section>
   </main>
