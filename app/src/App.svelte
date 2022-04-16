@@ -249,6 +249,31 @@
               accept="image/png, image/jpeg, image/gif, image/jpg"
             />
           </div>
+          <div class="mt-4 alert alert-warning shadow-lg">
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="stroke-current flex-shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                /></svg
+              >
+              <span
+                >Warning: Any information and image you post will be on the<br
+                />
+                Permaweb. It is immutable and permanent. Act accordingly - no<br
+                />
+                copyrighted material or NSFW. It's also connected with your<br
+                />
+                wallet address. Thanks!</span
+              >
+            </div>
+          </div>
           <!--
           <div class="form-control">
             <label for="place" class="label">Place</label>
@@ -274,10 +299,7 @@
               class="input input-bordered"
               bind:value={location}
             />
-            <!--
-            <div class="my-4">{place}</div>
-            -->
-            <button on:click={getLocation} type="button" class="btn"
+            <button on:click={getLocation} type="button" class="btn mt-4"
               >Get Current Location</button
             >
           </div>
