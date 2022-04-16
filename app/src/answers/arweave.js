@@ -52,8 +52,10 @@ query {
 }
 
 export const submit = async ({ data, tags }) => {
+
   const tx = await arweave.createTransaction({ data })
   tags.map(({ name, value }) => tx.addTag(name, value))
+
   try {
     await arweave.transactions.sign(tx)
     const uploader = await arweave.transactions.getUploader(tx)
@@ -79,8 +81,14 @@ query {
     id
   }
 }
-    `});
-    foundPost = result.data.data.transaction.id === txId;
+    `}).catch(e => {
+        return ({
+          data: { data: { transaction: null } }
+        })
+      });
+    if (result.data.data.transaction) {
+      foundPost = result.data.data.transaction.id === txId;
+    }
     if (count > 10) {
       break; // could not find post
     }
