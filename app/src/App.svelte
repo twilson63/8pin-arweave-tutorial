@@ -157,14 +157,22 @@
 <Route path="/">
   <main class="hero bg-base-100 min-h-screen">
     <section class="hero-content text-center flex-col">
-      <img src="8pin-logo2.png" alt="8pin-logo" />
+      <img src="8pin-logo2.png" alt="8pin-logo" style="height: 240px" />
       <h1 class="text-6xl">8pin</h1>
       <p>Drop a pin anywhere in the world, forever!</p>
       <div>
-        <a class="btn btn-primary" href="/explore">Explore</a>
+        <a class="btn btn-primary" href="/connect">Connect</a>
         <!--
+        <a class="btn btn-primary" href="/explore">Explore</a>
         <a class="btn" href="/pins/new">Drop a Pin</a>
           -->
+      </div>
+      <div class="alert alert-info text-white">
+        <p>
+          Welcome to 8pin, to get started connect your ArWeave Wallet and right
+          click or long press on the map to drop a pin! It's easy and only cost
+          7/10 of a penny for a megabyte.
+        </p>
       </div>
     </section>
   </main>
@@ -294,39 +302,45 @@
 </Route>
 <Route path="/pins/:id/show">
   <main class="hero bg-base-100 min-h-screen">
-    <section class="hero-content flex-col">
+    <section class="hero-content space-x-8">
       {#await getPin(meta().params.id) then pin}
-        <h1 class="text-6xl">{pin.title}</h1>
-        <p>{pin.description}</p>
-        <p>
-          {new Intl.DateTimeFormat("en-US", {
-            dateStyle: "full",
-            timeStyle: "long",
-          }).format(new Date(pin.timestamp))}
-        </p>
-        <p>{pin.place}</p>
-        <p>{pin.location}</p>
-        <img src={pin.image_url} alt={pin.title} />
+        <div class="card w-1/2 bg-base-100 shadow-xl p-4">
+          <h1 class="card-title">{pin.title}</h1>
+          <div class="card-body">
+            <p>{pin.description}</p>
+            <p>
+              {new Intl.DateTimeFormat("en-US", {
+                dateStyle: "full",
+                timeStyle: "long",
+              }).format(new Date(pin.timestamp))}
+            </p>
+            <p>{pin.place}</p>
+            <p>{pin.location}</p>
+          </div>
+          <div class="card-actions justify-end mt-8 space-x-4">
+            <button
+              on:click={() => {
+                window.scrollTo(0, 0);
+                router.goto("/explore");
+              }}
+              class="btn btn-primary">8pin</button
+            >
+            <a
+              class="btn"
+              target="_blank"
+              href="https://twitter.com/intent/tweet?text=Check%20out%20my%20pin&url={window.location.href.replace(
+                '#',
+                '%23'
+              )}"
+            >
+              Tweet</a
+            >
+          </div>
+        </div>
+        <figure class="w-1/2">
+          <img class=" rounded-md" src={pin.image_url} alt={pin.title} />
+        </figure>
       {/await}
-      <div class="mt-8 space-x-8">
-        <button
-          on:click={() => {
-            window.scrollTo(0, 0);
-            router.goto("/explore");
-          }}
-          class="btn btn-primary">8pin</button
-        >
-        <a
-          class="btn"
-          target="_blank"
-          href="https://twitter.com/intent/tweet?text=Check%20out%20my%20pin&url={window.location.href.replace(
-            '#',
-            '%23'
-          )}"
-        >
-          Tweet</a
-        >
-      </div>
     </section>
   </main>
 </Route>

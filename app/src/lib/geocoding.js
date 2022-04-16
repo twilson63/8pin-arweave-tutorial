@@ -14,4 +14,10 @@ export const getCoordinates = (search_text) =>
 export const getPlace = (lng, lat) =>
   fetch(encodeURI(url('mapbox.places', `${lng},${lat}`)))
     .then(res => res.json())
-    .then(res => res.features[0].place_name)
+    .then(res => {
+      console.log(res)
+      const pl = res.features[0].place_name.split(',')
+      // hide address
+      pl.shift()
+      return pl.join(',')
+    })
