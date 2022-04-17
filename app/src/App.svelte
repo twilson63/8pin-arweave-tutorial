@@ -194,12 +194,12 @@
                 lat={pin.location.split(",")[0]}
                 lon={pin.location.split(",")[1]}
                 label={`
-<div class="m-4 card w-96 bg-base-200 shadow-xl">
+<div class="m-4 card w-96 bg-base-200">
   <div class="card-body">
     <h1 class="card-title text-center">${pin.title}</h1>
     <p>${pin.description}</p>  
   </div>
-  <div class="card-actions justify-center">
+  <div class="card-actions pb-4 justify-center">
     <a class="btn btn-ghost" href="/pins/${pin.id}/show">View Pin</a> 
   </div>
 </div>             

@@ -11,7 +11,11 @@
 
   //const popup = new mapbox.Popup({ offset: 25 }).setText(label);
 
-  const popup = new mapbox.Popup({ offset: 25 }).setHTML(label);
+  const popup = new mapbox.Popup({
+    offset: 25,
+    closeButton: false,
+    closeOnClick: true,
+  }).setHTML(label);
 
   const marker = new mapbox.Marker()
     .setLngLat([lon, lat])
