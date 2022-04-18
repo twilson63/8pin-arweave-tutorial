@@ -27,7 +27,7 @@
       pop = new mapbox.Popup({ closeButton: false, closeOnClick: true })
         .setLngLat([lon, lat])
         .setHTML(
-          `<div class="m-4 card w-96 bg-base-200">
+          `<div class="m-4 card w-48 md:w-96 bg-base-200">
           <div class="card-body">
             <h1 class="card-title text-center">Drop a Pin</h1>
             <p>Right Click or long press inorder to drop a pin.</p>  
