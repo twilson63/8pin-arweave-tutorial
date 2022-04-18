@@ -230,6 +230,7 @@ tags:
   Protocol: '8pin' // constant
   Content-Type: 'image/png|jpg|gif' // only support images
   Title: 'Title of Pin' // limit 20 characters
+  Description: 'Description of Pin' // limit 50 characters
   Location: 'lat, lng' // Latitude, Longitude 
   Timestamp: '' // new Date.toISOString()
 ```
@@ -270,11 +271,18 @@ const arweave = Arweave.init({
   port: import.meta.env.VITE_ARWEAVE_PORT || 443,
   protocol: import.meta.env.VITE_ARWEAVE_PROTOCOL || 'https'
 })
+```
 
+> Import the arweave module and initialize our arweave constant using the `.env` variables or default to mainet. Mainet 
+> is the production version of Arweave's network.
+
+Below the init block we will add our first arweave function:
+
+``` js
 export const activity = async () => {
-  // TODO: this function will return the most recent pins
-  return arweave.api.post('graphql', {
-    query: `
+  try {
+    const result = await arweave.api.post('graphql', {
+      query: `
 query {
   transactions (tags: { name: "Protocol", values: ["8pin"] }) {
     edges {
@@ -289,10 +297,19 @@ query {
   }
 }
     `
-  })
+    })
+    return result?.data?.data?.transactions?.edges
+  } catch (e) {
+    return []
+  }
 }
-
 ```
+
+This function will query the arweave network for all of the 8pin pins and return the most recent 100 pins
+dropped on the network using graphql. You will notice the result returns two data objects then transactions 
+and edges.
+
+Now that we have our activity function, lets connect it to our interface, by opening up the `src/App.svelte` file and updating the `getRecentPins` function with a call to `activity` in the arweave module.
 
 Lets plug this module into our app module
 
