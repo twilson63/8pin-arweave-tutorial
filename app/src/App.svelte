@@ -178,11 +178,10 @@
         <a class="btn" href="/pins/new">Drop a Pin</a>
           -->
       </div>
-      <div class="alert alert-info text-white">
-        <p>
-          Welcome to 8pin, to get started connect your ArWeave Wallet and right
-          click or long press on the map to drop a pin! It's easy and only cost
-          7/10 of a penny for a megabyte.
+      <div class="alert alert-info text-white md:w-1/2">
+        <p class="">
+          To get started, connect your Arweave wallet of choice. It costs less
+          than a penny to add a pin to the Permaweb.
         </p>
       </div>
     </section>
@@ -223,6 +222,23 @@
   <main class="hero bg-base-100 min-h-screen">
     <section class="hero-content flex-col">
       <h1 class="text-3xl">Create a Pin</h1>
+      {#if window?.arweaveWallet === undefined}
+        <div class="alert alert-error flex-col items-start">
+          <h3 class="text-2xl">ERROR: Wallet not found</h3>
+          <p>
+            Looks like you don't have a wallet on Arweave.app - get one here <a
+              class="underline"
+              href="https://arweave.app/add">https://arweave.app/add</a
+            >
+          </p>
+          <p class="mt-4">
+            Looks like you don't have ArConnect installed - get it here <a
+              class="underline"
+              href="https://arconnect.io">https://ArConnect.io</a
+            >
+          </p>
+        </div>
+      {/if}
       <div class="w-full">
         <form class="form" on:submit|preventDefault={publishPin}>
           <div class="form-control">
@@ -371,10 +387,9 @@
             <a
               class="btn"
               target="_blank"
-              href="https://twitter.com/intent/tweet?text=Check%20out%20my%20pin&url={window.location.href.replace(
-                '#',
-                '%23'
-              )}"
+              href="https://twitter.com/intent/tweet?via=onlyarweave&text={encodeURI(
+                'Check out my pin on the permaweb'
+              )}&url={window.location.href.replace('#', '%23')}"
             >
               Tweet</a
             >
