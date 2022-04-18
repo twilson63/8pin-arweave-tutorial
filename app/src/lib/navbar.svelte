@@ -7,6 +7,7 @@
   async function changeLocation() {
     const coords = await getCoordinates(place);
     window.map.setCenter([coords.lng, coords.lat]);
+    window.scrollTo(0, 0);
   }
 
   function disconnect() {
@@ -24,12 +25,19 @@
     </a>
   </div>
   <div class="flex-none">
-    <input
-      class="input input-bordered hidden md:block"
-      placeholder="Enter a place..."
-      bind:value={place}
-      on:blur={changeLocation}
-    />
+    <form class="hidden md:block" on:submit|preventDefault={changeLocation}>
+      <div class="form-control">
+        <div class="input-group">
+          <input
+            class="input input-bordered"
+            placeholder="Enter a place..."
+            bind:value={place}
+            on:blur={changeLocation}
+          />
+          <button class="btn btn-square" type="submit">GO</button>
+        </div>
+      </div>
+    </form>
 
     <a class="btn btn-ghost" href="/explore">Explore</a>
     <a class="btn btn-ghost hidden md:inline-flex" href="/about">About</a>

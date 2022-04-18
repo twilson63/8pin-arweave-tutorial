@@ -7,6 +7,7 @@
 <main class="hero bg-base-100 min-h-screen">
   <section class="hero-content">
     <div>
+      <img alt="8pin" src="8pin-logo2.png" style="height: 120px" />
       <h1 class="text-4xl">About 8pin</h1>
       <p class="mt-8 md:w-1/2">
         8pin is a permaweb app and tutorial to showcase the basic functionality

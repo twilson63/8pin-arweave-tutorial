@@ -1,3 +1,13 @@
+import { z } from 'zod'
+
+const schema = z.object({
+  id: z.string(),
+  title: z.string().max(20),
+  description: z.string().max(50),
+  location: z.string().max(50),
+  timestamp: z.string().max(50)
+})
+
 export const pinFromTx = (tx) => {
 
   try {
@@ -7,7 +17,7 @@ export const pinFromTx = (tx) => {
       description: (tx.tags.find(t => t.name === 'Description')).value,
       location: tx.tags.find(t => t.name === 'Location').value,
       timestamp: tx.tags.find(t => t.name === 'Timestamp').value
-    }
+    }//schema.parse()
   } catch (e) {
     console.log(e)
     return null

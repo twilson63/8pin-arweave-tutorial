@@ -9,7 +9,7 @@
   import Marker from "./lib/marker.svelte";
   import { connect } from "./arweaveapp.js";
   import * as arconnect from "./arconnect";
-
+  import * as marked from "marked";
   import { address } from "./store.js";
   import { writable } from "svelte/store";
   import { getCoordinates, getPlace } from "./lib/geocoding.js";
@@ -55,6 +55,12 @@
       .then(pinFromTx)
       .then((pin) => {
         pin.image_url = `${arweaveUrl}/${pin.id}`;
+        return pin;
+      })
+      .then((pin) => {
+        pin.description =
+          marked.parse(pin.description) +
+          `<style>.pin-content a { text-decoration: underline; }</style>`;
         return pin;
       })
       .then(async (pin) => {
@@ -186,7 +192,7 @@
   <Navbar />
   <main class="hero bg-base-100 min-h-screen">
     <section class="flex flex-col w-full">
-      <div class="w-full h-3/4">
+      <div class="w-auto h-auto h-3/4 md:mx-4 md:my-4">
         <Map {lat} lon={lng} zoom={8} on:droppin={handleCreatePin}>
           {#await getRecentPins() then pins}
             {#each pins as pin}
@@ -208,7 +214,6 @@
             {/each}
           {/await}
         </Map>
-        <div>Right-Click on the Map to Drop a Pin</div>
       </div>
     </section>
   </main>
@@ -345,7 +350,7 @@
         <div class="card md:w-1/2 bg-base-100 shadow-xl p-4">
           <h1 class="card-title">{pin.title}</h1>
           <div class="card-body">
-            <p>{pin.description}</p>
+            <div class="pin-content">{@html pin.description}</div>
             <p>
               {new Intl.DateTimeFormat("en-US", {
                 dateStyle: "full",

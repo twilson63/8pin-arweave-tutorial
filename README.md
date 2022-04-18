@@ -241,8 +241,62 @@ With this basic protocol, anyone can drop a pin in any application, and 8pin wil
 
 ### Model Schema
 
-We want to make sure we have a solid validation process to verify transactions coming from the blockweave match our
-protocol, and when we create transactions that they can be signed and posted to the arweave network. This model schema will validate our data f
+We want to make sure we have a solid validation process to verify transactions coming from the blockweave match our protocol, and when we create transactions that they can be signed and posted to the arweave network. This model schema will validate our data for 8pin.
+
+> NOTE: This is for reference purposes, no need to enter this in to `src/pin.js` it is already there.
+
+We will use `zod` to create a schema check:
+
+``` js
+import { z } from 'zod'
+
+const schema = z.object({
+  id: z.string(),
+  title: z.string().max(20),
+  description: z.string().max(50),
+  location: z.string().max(50),
+  timestamp: z.string().max(50)
+})
+```
+
+``` js
+export const pinFromTx = (tx) => {
+
+  try {
+    return schema.parse({
+      id: tx.id,
+      title: (tx.tags.find(t => t.name === 'Title')).value,
+      description: (tx.tags.find(t => t.name === 'Description')).value,
+      location: tx.tags.find(t => t.name === 'Location').value,
+      timestamp: tx.tags.find(t => t.name === 'Timestamp').value
+    })
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+
+export const formToTx = (formData) => {
+  return {
+    data: formData.photo,
+    tags: [
+      { name: 'App-Name', value: '8pin' },
+      { name: 'Protocol', value: '8pin' },
+      { name: 'Title', value: formData.title },
+      { name: 'Location', value: formData.location },
+      { name: 'Description', value: formData.description },
+      { name: 'Timestamp', value: formData.timestamp }
+    ]
+  }
+}
+```
+
+### Summary
+
+Thinking in terms of protocols instead of models is a bit of a challenge when 
+moving from web2 to web3. It is important to keep your protocol schema, clean
+and simple, if you need to extend in the future you can create additional protocols
+and compose them. Be sure to always validate incoming data from the blockweave.
 
 ---
 
@@ -317,25 +371,44 @@ Lets plug this module into our app module
 <script>
 ...
 import { activity } from './arweave.js'
-// replace current function with this one
-function getRecentPins() {
-  return activity()
-    .map((_) => pinFromTx(_.node))
-    .filter((x) => x !== null)
-}
 ...
 
+async function getRecentPins() {
+  const pins = await activity()
+  return pins.map((_) => pinFromTx(_.node)) //
+    .filter((x) => x !== null) // filter out invalid pins
+    .map((pin) => {
+        pin.image_url = `${arweaveUrl}/${pin.id}`;
+        return pin;
+      })
+}
+...
 </script>
+<!-- No need to type this -->
+<Map {lat} lon={lng} zoom={8} on:droppin={handleCreatePin}>
+{#await getRecentPins() then pins}
+  {#each pins as pin}
+    <Marker
+      lat={pin.location.split(",")[0]}
+      lon={pin.location.split(",")[1]}
+      label={`
+<div class="m-4 card w-96 bg-base-200">
+  <div class="card-body">
+    <h1 class="card-title text-center">${pin.title}</h1>
+    <p>${pin.description}</p>  
+  </div>
+  <div class="card-actions pb-4 justify-center">
+    <a class="btn btn-ghost" href="/pins/${pin.id}/show">View Pin</a> 
+  </div>
+</div>             
+     `}
+      />
+  {/each}
+{/await}
+</Map>
 ```
 
 Now when you navigate to the `/explore` page you should see a couple of pins on our map.
-
----
-
-### arweave access layer
-
-Lets create a arweave access layer for our application, so that all of our components can access the arweave functionality from a single module.
-
 
 ---
 
@@ -359,8 +432,8 @@ Then we can create `arweaveapp.js` file in our `app/src` folder to contain the f
 import { ArweaveWebWallet } from 'arweave-wallet-connector'
 
 const wallet = new ArweaveWebWallet({
-	name: 'Connector Example',
-	logo: 'https://jfbeats.github.io/ArweaveWalletConnector/placeholder.svg'
+	name: '8pin',
+	logo: `${window.location.origin}/8pin-logo2.png`
 })
 
 wallet.setUrl('arweave.app')
@@ -389,7 +462,7 @@ ArConnect is the web browser extension wallet, similar to metamask, this wallet,
 
 With ArConnect, when you connect as an app you can indicate the permissions you would like to access for the wallet.
 
-Here are some of the permissions we will be using: `['ACCESS_ADDRESS', 'SIGN_TRANSACTION', 'ENCRYPT', 'DECRYPT']`
+Here are some of the permissions we will be using: `['ACCESS_ADDRESS', 'SIGN_TRANSACTION']`
 
 You can find out more about all the permissions for ArConnect in their project readme (https://github.com/th8ta/ArConnect#permissions)
 
@@ -399,7 +472,7 @@ You can find out more about all the permissions for ArConnect in their project r
 AppInfo is the second argument to the connect method, this is where you can show the name and logo of your app within the wallet view. It is optional, but can provide value to give the user observability to connect the wallet with the dapp.
 
 ``` js
-await arweaveWallet.connect(permissions, {name: '8pin', logo: 'url'})
+await arweaveWallet.connect(permissions, {name: '8pin', `${window.location.origin}/8pin-logo2.png`})
 ```
 
 #### ArConnect Module
@@ -412,7 +485,7 @@ export const connect = async () => {
   if (!arweaveWallet) {
     alert('ArConnect is not installed!')
   }
-  await arweaveWallet.connect(['ACCESS_ADDRESS', 'SIGN_TRANSACTION', 'ENCRYPT', 'DECRYPT'], { name: '8pin' })
+  await arweaveWallet.connect(['ACCESS_ADDRESS', 'SIGN_TRANSACTION'], { name: '8pin' })
   return await arweaveWallet.getPublicAddress()
 }
 ```

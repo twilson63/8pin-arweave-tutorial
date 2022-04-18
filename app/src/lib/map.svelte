@@ -22,8 +22,36 @@
       center: [lon, lat],
       zoom,
     });
+    let pop = null;
+    if (!localStorage.getItem("droppin-popup")) {
+      pop = new mapbox.Popup({ closeButton: false, closeOnClick: true })
+        .setLngLat([lon, lat])
+        .setHTML(
+          `<div class="m-4 card w-96 bg-base-200">
+          <div class="card-body">
+            <h1 class="card-title text-center">Drop a Pin</h1>
+            <p>Right Click or long press inorder to drop a pin.</p>  
+          </div>
+          <div class="card-actions pb-4 justify-center">
+            <button id="droppin" class="btn btn-ghost">Got It</button> 
+          </div>
+        </div>  
+        `
+        )
+        .addTo(map);
+    }
+
     map.addControl(new mapbox.NavigationControl());
-    map.on("render", () => map.resize());
+
+    map.on("render", () => {
+      map.resize();
+      if (!localStorage.getItem("droppin-popup")) {
+        document.getElementById("droppin").addEventListener("click", () => {
+          pop.remove();
+          localStorage.setItem("droppin-popup", true);
+        });
+      }
+    });
     map.on("contextmenu", (e) => {
       dispatch("droppin", e.lngLat);
     });
@@ -70,7 +98,7 @@
   />
 </svelte:head>
 
-<div bind:this={container}>
+<div bind:this={container} class="min-h-screen">
   {#if map}
     <slot />
   {/if}
@@ -79,6 +107,5 @@
 <style>
   div {
     width: 100%;
-    height: 1050px;
   }
 </style>
