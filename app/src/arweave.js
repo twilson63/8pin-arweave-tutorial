@@ -70,16 +70,21 @@ export const submit = async ({ data, tags }) => {
     return { ok: false, message: 'Wallet not connected!' }
   }
 
-  const tx = await arweave.createTransaction({ data })
-  tags.map(({ name, value }) => tx.addTag(name, value))
+  const balance = await getBalance(await window.arweaveWallet.getActiveAddress())
 
   try {
+    const tx = await arweave.createTransaction({ data })
+    tags.map(({ name, value }) => tx.addTag(name, value))
     await arweave.transactions.sign(tx)
+    // 2. check reward and wallet balance
+    if (tx.reward > balance) {
+      return { ok: false, message: 'Not Enough AR to complete request!' }
+    }
     const uploader = await arweave.transactions.getUploader(tx)
     return { ok: true, uploader, txId: tx.id }
   } catch (e) {
     console.log(e)
-    return { ok: false, tx, message: e.message }
+    return { ok: false, txId: tx.id, message: e.message }
   }
 }
 
@@ -117,3 +122,8 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+async function getBalance(addr) {
+  let winston = await arweave.wallets.getBalance(addr)
+  //let ar = arweave.ar.winstonToAr(winston);
+  return winston
+}
