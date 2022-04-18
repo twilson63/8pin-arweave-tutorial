@@ -77,7 +77,7 @@ export const submit = async ({ data, tags }) => {
     tags.map(({ name, value }) => tx.addTag(name, value))
     await arweave.transactions.sign(tx)
     // 2. check reward and wallet balance
-    if (tx.reward > balance) {
+    if (Number(tx.reward) > Number(balance)) {
       return { ok: false, message: 'Not Enough AR to complete request!' }
     }
     const uploader = await arweave.transactions.getUploader(tx)
