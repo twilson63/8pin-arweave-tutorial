@@ -380,6 +380,8 @@
             <button
               on:click={() => {
                 window.scrollTo(0, 0);
+                lat = pin.location.split(",")[0];
+                lng = pin.location.split(",")[1];
                 router.goto("/explore");
               }}
               class="btn btn-primary">8pin</button

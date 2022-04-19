@@ -6,7 +6,7 @@
 
 ## Who is this tutorial for?
 
-If you are familiar with Arweave and are comfortable with javascript, this tutorial will guide you through some of the arweave development components to deliver a permaweb dapp. To learn more about Arweave, get started at https://www.arweave.org/.
+If you are familiar with Arweave and are comfortable with javascript, this tutorial will guide you through some of the Arweave development components to deliver a permaweb dapp. To learn more about Arweave, get started at https://www.arweave.org/.
 
 Before we dive in, lets have a quick discussion about what we are trying to achieve.
 
@@ -80,21 +80,21 @@ This guide is broken into sections that take roughly 20 - 30 minutes to complete
 
 These are a list of tools that we will be using from the Arweave ecosystem to help us with our application, 
 
-arlocal allows us to run a `devnet` local arweave gateway/node, to iterate on our development locally. https://github.com/textury/arlocal
+Arlocal allows us to run a `devnet` local Arweave gateway/node, to iterate on our development locally. https://github.com/textury/arlocal
 
-> arlocal is a great tool, I have not found any differences between my interaction with arlocal and the arweave.net, when my code works with arlocal, I am 100% confident it will work on arweave.net.
+> Arlocal is a great tool, I have not found any differences between my interaction with arlocal and the arweave.net, when my code works with arlocal, I am 100% confident it will work on arweave.net.
 
 ArweaveJS is a javascript library that provides us with the APIs to post data on the weave and query data from the weave using `GraphQL`. https://github.com/ArweaveTeam/arweave-js
 
-> arweave js abstacts the JSON RPC api and wraps the commands using a javascript friendly promised based api, so you can generate wallets, create, sign, and post transactions.
+> Arweave js abstacts the JSON RPC api and wraps the commands using a javascript friendly promised based api, so you can generate wallets, create, sign, and post transactions.
 
 ArweaveWalletConnector is a module that allows us to connect with the wallet application called `arweave.app`. https://github.com/jfbeats/ArweaveWalletConnector
 
-> arweave wallet connector interacts with the arweave.app wallet and gives you the connect, disconnect and several wallet connection events.
+> Arweave wallet connector interacts with the arweave.app wallet and gives you the connect, disconnect and several wallet connection events.
 
 ArConnect is a module that allows us to connect with the ArConnect browser extension wallet, the most popular wallet in the arweave community. https://github.com/th8ta/ArConnect
 
-> arconnect interacts with the arconnect browser extension, the extension injects arweaveWallet into the browser, so that you can interact with arconnect via the arweaveWallet API.
+> ArConnect interacts with the ArConnect browser extension, the extension injects arweaveWallet into the browser, so that you can interact with arconnect via the arweaveWallet API.
 
 Arkb is a command-line application that publishes our web application to the permaweb. https://github.com/textury/arkb
 
@@ -133,7 +133,7 @@ yarn load-data
 
 Time: (25 - 30 minutes)
 
-One of the coolest things about arweave is the gateway server supports graphql out of the box! Yes! Out of the box, you can use graphql to query the blockweave! Crazy right? 
+One of the coolest things about Arweave is the gateway server supports Graphql out of the box! Yes! Out of the box, you can use Graphql to query the blockweave! Crazy right? 
 
 Make sure your `arlocal` server is running, we want to open a browser to http://localhost:1984/graphql. You should get a screen requesting you to launch the apollo graphql visual tool. Click on that button, and you should see the graphql query environment. Yay! ⭐️
 
@@ -214,14 +214,15 @@ You should see some results like:
 }
 ```
 
-We can use tags to create queries on graphql and get access to specific transactions, in this case we are getting all the transactions that use the App-Name `8pin`. 
+When we post our transaction with tags, we can use those tags as selectors in our Graphql 
+queries to filter our query requests. In our above example, we are using the tag name `App-Name` and the tag value `8pin` as selector criteria in our Graphql query. 
 
 ---
 
 
 ## Discussing the 8pin protocol (10 - 20 minutes)
 
-Since arweave is a decentralized data storage layer, you can leverage arweave to become you cloud backend, the way you do this, you create a protocol for use by any similar application, the protocol is very much like a schema in a database, it defines the shape of your data for your application. An Arweave transaction is made up of several properties, but the most important properties for our protocol design is the data property and the tags properties. With Arweave you can create tags that can only contain 2048 bits of data, but these tags can be used to enable queryable transactions via graphql. Our goals for the 8pin protocol is to be able to list our transactions on a map, in an efficient way. So our graphql query will need to return location data, a title, we also want to filter the list via timestamps, so we need to make sure timestamps are added to our tags specification.
+Since Arweave is a decentralized data storage layer, you can leverage Arweave to become your cloud backend! The way this works, is that you create a protocol for your data, the protocol is very much like a schema in a database, it defines the shape of your data for your application. An Arweave transaction is made up of several properties, but the most important properties for our protocol design is the data property and the tags properties. With Arweave you can create tags on every transactions, but tthe combination of all the tags you create can only contain a total 2048 bits of data. These tags can be used to enable queryable transactions via Graphql. Our goals for the 8pin protocol is to be able to list our transactions on a map, in an efficient way. Our graphql query will need to return location data, a title, we also want to filter the list via timestamps, so we need to make sure timestamps are added to our tags specification.
 
 ```
 data: image
@@ -230,7 +231,7 @@ tags:
   Protocol: '8pin' // constant
   Content-Type: 'image/png|jpg|gif' // only support images
   Title: 'Title of Pin' // limit 20 characters
-  Description: 'Description of Pin' // limit 50 characters
+  Description: 'Description of Pin' // limit 100 characters
   Location: 'lat, lng' // Latitude, Longitude 
   Timestamp: '' // new Date.toISOString()
 ```
@@ -241,7 +242,7 @@ With this basic protocol, anyone can drop a pin in any application, and 8pin wil
 
 ### Model Schema
 
-We want to make sure we have a solid validation process to verify transactions coming from the blockweave match our protocol, and when we create transactions that they can be signed and posted to the arweave network. This model schema will validate our data for 8pin.
+We want to make sure we have a solid validation process to verify transactions coming from Arweave to match our protocol, and when we create transactions that they can be signed and posted to the Arweave network. This model schema will validate our data for 8pin.
 
 > NOTE: This is for reference purposes, no need to enter this in to `src/pin.js` it is already there.
 
@@ -253,7 +254,7 @@ import { z } from 'zod'
 const schema = z.object({
   id: z.string(),
   title: z.string().max(20),
-  description: z.string().max(50),
+  description: z.string().max(100),
   location: z.string().max(50),
   timestamp: z.string().max(50)
 })
@@ -359,9 +360,7 @@ query {
 }
 ```
 
-This function will query the arweave network for all of the 8pin pins and return the most recent 100 pins
-dropped on the network using graphql. You will notice the result returns two data objects then transactions 
-and edges.
+This function will query the Arweave network for all of the 8pin pins and return the most recent 100 pins dropped on the network using Graphql. You will notice the result returns two nested data objects, then transactions, and edges.
 
 Now that we have our activity function, lets connect it to our interface, by opening up the `src/App.svelte` file and updating the `getRecentPins` function with a call to `activity` in the arweave module.
 
@@ -410,6 +409,8 @@ async function getRecentPins() {
 
 Now when you navigate to the `/explore` page you should see a couple of pins on our map.
 
+🎉
+
 ---
 
 ## Integrating Arweave.app and arConnect
@@ -442,7 +443,6 @@ export const connect = async () => {
   const result = await wallet.connect()
   if (result.ready) {
     const addr = arweaveWallet.getActiveAddress()
-    address.set(addr)
     localStorage.setItem('address', addr)
     localStorage.setItem('wallet', 'arweave.app')
     return addr
@@ -477,17 +477,21 @@ await arweaveWallet.connect(permissions, {name: '8pin', `${window.location.origi
 
 #### ArConnect Module
 
-Lets create our arconnect module:
+Lets create our ArConnect module:
 
 ``` js
-
 export const connect = async () => {
-  if (!arweaveWallet) {
+  if (!window.arweaveWallet) {
     alert('ArConnect is not installed!')
+    return ''
   }
-  await arweaveWallet.connect(['ACCESS_ADDRESS', 'SIGN_TRANSACTION'], { name: '8pin' })
-  return await arweaveWallet.getPublicAddress()
+  await arweaveWallet.connect(['ACCESS_ADDRESS', 'SIGN_TRANSACTION', 'ENCRYPT', 'DECRYPT'], { name: '8pin', logo: `${window.location.origin}/8pin-logo.png` })
+  const addr = await arweaveWallet.getActiveAddress()
+  localStorage.setItem('address', addr)
+  localStorage.setItem('wallet', 'arconnect')
+  return addr
 }
+
 ```
 
 ---
@@ -496,48 +500,45 @@ export const connect = async () => {
 
 Time:  (15 - 20 minutes)
 
-Now that we have arweave.js installed and a wallet connected, we are ready to create our first pin. Before we do that, lets mint some ar tokens for our local environment.
+Now that we have Arweave.js installed and a wallet connected, we are ready to create our first pin. Before we do that, lets mint some ar tokens for our local environment.
 
-// https://[arlocal url]/mint/address/[winston]
+// https://[arlocal url]/mint/address/[winston 1000000000000000]
 
-// arweave.js
+// Arweave.js
 
-Lets build an arweave transaction, we will use arweave.js to build it.
+Lets build an Arweave transaction, we will use Arweave.js to build it.
 
 ``` js
 
-export async function submitTx(txObj) {
-  const tx = await arweave.createTransaction({
-    data: txObj.data
-  })
-  txObj.tags.map(tag => tx.addTag(tag.name, tag.value))
-  await arweave.transactions.sign(tx)
-  // upload tx
-  let uploader = await arweave.transactions.getUploader(tx)
-  while (!uploader.isComplete) {
-    await uploader.uploadChunk()
-    //console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`)
+export const submit = async ({ data, tags }) => {
+  // 1. Wallet not Connected!
+  if (window?.arweaveWallet === undefined) {
+    return { ok: false, message: 'Wallet not connected!' }
   }
-  return
+
+  const balance = await getBalance(await window.arweaveWallet.getActiveAddress())
+
+  try {
+    const tx = await arweave.createTransaction({ data })
+    tags.map(({ name, value }) => tx.addTag(name, value))
+    await arweave.transactions.sign(tx)
+    // 2. check reward and wallet balance
+    if (Number(tx.reward) > Number(balance)) {
+      return { ok: false, message: 'Not Enough AR to complete request!' }
+    }
+    const uploader = await arweave.transactions.getUploader(tx)
+    return { ok: true, uploader, txId: tx.id }
+  } catch (e) {
+    return { ok: false, txId: tx.id, message: e.message }
+  }
 }
 ```
 
 This function will take care of the create, sign and upload of our arweave transaction, and using our pin model we can validate the form entry data and convert to a `transactionObject` this is just a simple object that can be sent to the the submitTx function.
 
-``` js
-export const submit = async ({ data, tags }) => {
-  const tx = await arweave.createTransaction({ data })
-  tags.map(({ name, value }) => tx.addTag(name, value))
-  try {
-    await arweave.transactions.sign(tx)
-    const uploader = await arweave.transactions.getUploader(tx)
-    return { ok: true, uploader, txId: tx.id }
-  } catch (e) {
-    console.log(e)
-    return { ok: false, tx, message: e.message }
-  }
-}
+Next, we need to add a waitfor function, this function will gracefully check the Arweave gateway for a status on the processing of a transaction. Once the transaction is uploaded, we need verification from the gateway that the transaction has been accepted.
 
+``` js
 export const waitfor = async (txId) => {
   let count = 0;
   let foundPost = null;
@@ -561,8 +562,6 @@ query {
   }
   return foundPost
 }
-
-
 ```
 
 ---
@@ -602,4 +601,4 @@ Congrats! You have reached the end of the Arweave 8pin dapp tutorial, in this tu
 * how to deploy to arlocal
 * how to deploy to production
 
-There is a lot more to discover with arweave, hopefully this tutorial and workshop, gives you many ideas on how to innovate with the permaweb the new scalable decentralized app development platform.
+There is a lot more to discover with Arweave, hopefully this tutorial and workshop, gives you many ideas on how to innovate with the permaweb the new scalable decentralized app development platform.
