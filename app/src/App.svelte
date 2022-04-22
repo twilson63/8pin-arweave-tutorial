@@ -219,7 +219,7 @@
 </Route>
 <Route path="/pins/new">
   <Navbar />
-  <main class="hero bg-base-100 min-h-screen">
+  <main class="hero bg-base-200 min-h-screen">
     <section class="hero-content flex-col">
       <h1 class="text-3xl">Create a Pin</h1>
       {#if window?.arweaveWallet === undefined}
@@ -357,6 +357,7 @@
   </main>
 </Route>
 <Route path="/pins/:id/show">
+  <Navbar />
   <main class="hero bg-base-100 min-h-screen">
     <section class="hero-content flex-col md:flex-row space-x-8">
       {#await getPin(meta().params.id) then pin}
