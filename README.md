@@ -1,3 +1,4 @@
+<img align="center" style="height: 64px" src="app/public/8pin-logo2.png" alt="logo" />
 <h1 align="center">8pin ArWeave tutorial</h1>
 <p align="center">Build a dapp on ArWeave!</p>
 <p align="center">In this tutorial we are going to use common web techonologies to build a dapp on the ArWeave Blockweave</p>
@@ -6,17 +7,20 @@
 
 ## Who is this tutorial for?
 
-If you are familiar with Arweave and are comfortable with javascript, this tutorial will guide you through some of the Arweave development components to deliver a permaweb dapp. To learn more about Arweave, get started at https://www.arweave.org/.
+If you are new to Arweave and are comfortable with HTML, CSS, and Javascript, this tutorial will guide you through some of the basic Arweave development components to deliver a Permaweb dapp. To learn more about Arweave, get started at https://www.arweave.org/.
+
+I like to think of Arweave as a decentralized application distribution platform.
 
 Before we dive in, lets have a quick discussion about what we are trying to achieve.
 
-## A geopin drop application `8pin`
+## A geopin application `8pin`
 
-At the end of this guide you will have built a geopin drop application deployed permanently on arweave. Because both data and front end will be stored on arweave, no third party or bad actor can censor them or take it down. All for the cost of less than a penny!
+8pin allows users to take some text and a photo and document a moment at a specific location. In this tutorial we 
+will step through the process of using many of the Arweave developer tools and libraries to deliver our 8pin application to the Permaweb.
 
-We are going to assume you already have some familiarity with Svelte and Tailwind, and start with a sample app -- filling in the Arweave specific functionality to learn how to build directly on Arweave.
+8pin is built using Svelte, Tailwind and NodeJS, so to get the most out of this tutorial you should be familiar with Javascript. The frontend code and styles are already in place, we will walk through the process of integrating the application to the Arweave platform. 
 
-We will create a protocol for 8pin, the protocol will be common to any geopin drop application on ArWeave, we do not need to use a cloud or even a database, we will use the blockweave to store and access our data. ArWeave enables composability, so that many frontend applications can leverage the same data and render or manage it differently. Composability is a big part of the web3 ecosystem, by defining a re-usable protocol we can create rapid iteration and exploration by building on top of existing building blocks without having to invent from scratch each time.
+Arweave is unique, because it serves as our storage service as well as our application service and is decentralized. So we will use Arweave to read and write data for our application as well as deploy our application's code to Arweave to serve the app via a web browser. This concept at first may take a little time to comprehend. Arweave is made up of nodes and gateways. The nodes manage the storage and blockweave bits, while the gateways manage the Cache, RPC API, and Query features. The gateway is where the magic happens for our decentralized applications. By storing data with metadata tags like 'Content-Type' we can provide information to the gateway servers how to present our data. This allows a web browser to interact directly with our application as if the gateway is a web server.
 
 ## Why Arweave for web3?
 
@@ -41,7 +45,7 @@ Open a terminal window in the project directory and run:
 yarn
 ```
 
-Create a `.env`, the `.env` file will setup our environment settings for the application, we need to specify the following settings:
+Create a `app/.env`, the `.env` file will setup our environment settings for the application, we need to specify the following settings:
 
 > NOTE: make sure you create your `.env` file in the `app` directory.
 
@@ -112,9 +116,7 @@ Arlocal is a local server that implements the same API as the Arweave network, t
 It is easy to setup, you simply install it from npm and setup a script for you to start the server.
 
 ```
-npm install --save-dev arlocal
-npx json -I -f package.json -e 'this.scripts.arlocal = "arlocal --persist"'
-yarn arlocal
+npx arlocal
 ```
 
 You can find out more about Arlocal in its repository - https://github.com/textury/arlocal - check out the readme, it has some cool options that you may be interested in, like running on a different port, or hiding the logs, or running programatically.
