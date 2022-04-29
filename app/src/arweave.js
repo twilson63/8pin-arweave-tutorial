@@ -1,4 +1,11 @@
 import Arweave from 'arweave'
+import redstone from 'redstone-api'
+import { calc } from './lib/calc.js'
+import { selectWeightedPstHolder } from 'smartweave'
+
+const { SmartWeaveWebFactory, LoggerFactory } = rsdk
+
+const CONTRACT_ID = 'ouND-cC3DCerx_2hrHY3c2X-9pu3OtSQEMo8p9iBXFM'
 
 // we want to use a `.env` file for arlocal and if not set, then use
 // arweave.net for production
@@ -7,6 +14,9 @@ const arweave = Arweave.init({
   port: import.meta.env.VITE_ARWEAVE_PORT || 443,
   protocol: import.meta.env.VITE_ARWEAVE_PROTOCOL || 'https'
 })
+
+const smartweave = SmartWeaveWebFactory.memCachedBased(arweave).useRedStoneGateway().build()
+const pst = smartweave.pst(CONTRACT_ID).connect('use_wallet')
 
 export const getTx = async (id) => {
   try {
@@ -36,7 +46,7 @@ export const activity = async () => {
     const result = await arweave.api.post('graphql', {
       query: `
 query {
-  transactions (tags: { name: "Protocol", values: ["8pin"] }) {
+  transactions (first: 100, tags: { name: "Protocol", values: ["8pin"] }) {
     edges {
       node {
         id
@@ -73,11 +83,20 @@ export const submit = async ({ data, tags }) => {
   const balance = await getBalance(await window.arweaveWallet.getActiveAddress())
 
   try {
-    const tx = await arweave.createTransaction({ data })
+    const AR = (await redstone.query().symbol('AR').latest().exec())['value']
+    const quantity = arweave.ar.arToWinston(calc(1, AR))
+    const contractState = await pst.currentState()
+    console.log({ contractState })
+    const holder = selectWeightedPstHolder(contractState.balances)
+    const tx = await arweave.createTransaction({ data, quantity, target: holder })
+
     tags.map(({ name, value }) => tx.addTag(name, value))
     await arweave.transactions.sign(tx)
     // 2. check reward and wallet balance
-    if (Number(tx.reward) > Number(balance)) {
+    console.log('qty', arweave.ar.winstonToAr(tx.quantity))
+    console.log('reward', tx.reward)
+    console.log('balance', balance)
+    if (Number(tx.reward) + Number(tx.quantity) > Number(balance)) {
       return { ok: false, message: 'Not Enough AR to complete request!' }
     }
     const uploader = await arweave.transactions.getUploader(tx)

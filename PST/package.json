@@ -1,0 +1,15 @@
+{
+  "name": "PST",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.14.38",
+    "replace-in-file": "^6.3.2"
+  },
+  "dependencies": {
+    "arweave": "^1.10.23",
+    "redstone-smartweave": "^0.4.79"
+  }
+}
