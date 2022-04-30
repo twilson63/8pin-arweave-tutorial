@@ -22,6 +22,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "arverify": "^0.0.11",
     "arweave": "^1.10.23",
     "arweave-wallet-connector": "^0.0.26",
     "marked": "^4.0.14",

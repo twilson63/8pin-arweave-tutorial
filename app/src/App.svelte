@@ -81,6 +81,7 @@
 
     // createTags
     const tags = [
+      { name: "Content-Type", value: files[0].type },
       { name: "App-Name", value: "8pin" },
       { name: "Protocol", value: "8pin" },
       { name: "Title", value: title },
