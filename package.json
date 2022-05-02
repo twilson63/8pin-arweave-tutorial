@@ -5,15 +5,10 @@
   "repository": "https://github.com/twilson63/8pin-arweave-tutorial.git",
   "author": "Tom Wilson <tom@hyper.io>",
   "license": "MIT",
-  "devDependencies": {
-    "arlocal": "^1.1.30"
-  },
   "scripts": {
-    "arlocal": "arlocal --persist",
-    "load-data": "node load-dev-data.js",
-    "postinstall": "cd app && yarn"
+    "load-data": "node load-dev-data.js"
   },
   "dependencies": {
-    "arkb": "^1.1.55"
+    "arweave": "^1.10.23"
   }
 }
