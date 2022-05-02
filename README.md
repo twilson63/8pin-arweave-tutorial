@@ -1,7 +1,7 @@
 <img align="center" style="height: 64px" src="app/public/8pin-logo2.png" alt="logo" />
-<h1 align="center">8pin ArWeave tutorial</h1>
+<h1 align="center">8pin Arweave tutorial</h1>
 <p align="center">Build a dapp on ArWeave!</p>
-<p align="center">In this tutorial we are going to use common web techonologies to build a dapp on the ArWeave Blockweave</p>
+<p align="center">In this tutorial we are going to use common web techonologies to build a dapp on the Arweave Blockweave</p>
 
 ---
 
@@ -64,7 +64,7 @@ This guide is broken into sections that take roughly 20 - 30 minutes to complete
 
 1. [Arweave Developer Tools Review (5 minutes)](#arweave-devtools)
 1. [Setting up Arlocal (10 - 20 minutes)](#setting-up-arlocal)
-1. [Querying ArWeave (25 - 30 minutes)](#querying-arweave)
+1. [Querying Arweave (25 - 30 minutes)](#querying-arweave)
 1. [Discussing the 8pin protocol (5 minutes)](#discussing-8pin-protocol)
 1. [Integrating Arweave-js (25 - 30 minutes)](#integrating-arweave-js)
 1. [Integrating Arweave.app (25 - 30 minutes)](#integrating-arweave-app)
