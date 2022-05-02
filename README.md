@@ -584,7 +584,7 @@ arkb deploy app/dist --wallet mywallet.json --gateway http://localhost:1984
 ## Production Deploy
 
 ``` sh
-arkb deploy app/dist --wallet mywallet.json
+arkb deploy app/dist --wallet mywallet.json --tag-name Deploy --tag-value 8pin
 ```
 
 ---
