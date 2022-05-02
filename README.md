@@ -24,7 +24,7 @@ Arweave is unique, because it serves as our storage service as well as our appli
 
 ## Why Arweave for web3?
 
-Arweave is a blockweave, which means its like a blockchain, but Arweave supports data of any size for transactions, this is fundamentally different that the current blockchains and creates a unique differentiator between other layer 1 networks. With Arweave you get an entire cloud development and hosting platform in one, Arweave supports web standards, smart contracts and NFTs, and you can use almost any language to leverage these features, if you are a full stack developer and work with technologies like javascript, graphql, APIs, etc. You are more than prepared to develop on the Arweave ecosystem.
+Arweave is a blockweave, which means its like a blockchain, but Arweave supports data of any size for transactions, this is fundamentally different that the current blockchains and creates a unique differentiator between other layer 1 networks. With Arweave you get a cloud development and hosting platform in one, Arweave supports web standards, smart contracts, Profit Sharing Tokens (Token), Profit Sharing Communities (DAO) and NFTs (Non-Fungible Tokens), and you can use almost any language to leverage these features, if you are a full stack developer and work with technologies like javascript, graphql, APIs, etc. You are more than prepared to develop on the Arweave ecosystem.
 
 ## Prerequisites
 
@@ -33,7 +33,7 @@ Arweave is a blockweave, which means its like a blockchain, but Arweave supports
 * JSON/GraphQL - https://graphql.org
 * Mapbox account - https://www.mapbox.com/
 
-> Create a free mapbox account to take advantage of the mapping and geocoding features. You will need a free developer public API key.
+> Create a free mapbox account to take advantage of the mapping and geocoding features. You will need a free developer public API key. https://www.mapbox.com
 
 ## Setup
 
