@@ -24,7 +24,7 @@
   "dependencies": {
     "arverify": "^0.0.11",
     "arweave": "^1.10.23",
-    "arweave-wallet-connector": "^0.0.26",
+    "arweave-wallet-connector": "^0.0.29",
     "marked": "^4.0.14",
     "redstone-api": "^0.4.11",
     "smartweave": "^0.4.48",

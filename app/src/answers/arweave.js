@@ -1,4 +1,12 @@
 import Arweave from 'arweave'
+import redstone from 'redstone-api'
+import { calc } from './lib/calc.js'
+import { selectWeightedPstHolder } from 'smartweave'
+import { getVerification } from 'arverify'
+
+const { SmartWeaveWebFactory, LoggerFactory } = window.rsdk
+
+const CONTRACT_ID = 'ouND-cC3DCerx_2hrHY3c2X-9pu3OtSQEMo8p9iBXFM'
 
 // we want to use a `.env` file for arlocal and if not set, then use
 // arweave.net for production
@@ -7,6 +15,10 @@ const arweave = Arweave.init({
   port: import.meta.env.VITE_ARWEAVE_PORT || 443,
   protocol: import.meta.env.VITE_ARWEAVE_PROTOCOL || 'https'
 })
+
+LoggerFactory.INST.logLevel('error')
+const smartweave = SmartWeaveWebFactory.memCachedBased(arweave).useRedStoneGateway().build()
+const pst = smartweave.pst(CONTRACT_ID).connect('use_wallet')
 
 export const getTx = async (id) => {
   try {
@@ -36,7 +48,7 @@ export const activity = async () => {
     const result = await arweave.api.post('graphql', {
       query: `
 query {
-  transactions (tags: { name: "Protocol", values: ["8pin"] }) {
+  transactions (first: 100, tags: { name: "Protocol", values: ["8pin"] }) {
     edges {
       node {
         id
@@ -69,15 +81,26 @@ export const submit = async ({ data, tags }) => {
   if (window?.arweaveWallet === undefined) {
     return { ok: false, message: 'Wallet not connected!' }
   }
-
-  const balance = await getBalance(await window.arweaveWallet.getActiveAddress())
-
+  const addr = await window.arweaveWallet.getActiveAddress()
+  const balance = await getBalance(addr)
+  let tx = null
   try {
-    const tx = await arweave.createTransaction({ data })
+    const verification = await getVerification(addr)
+    if (verification.verified && verification.percentage > 60) {
+      tx = await arweave.createTransaction({ data })
+    } else {
+      const AR = (await redstone.query().symbol('AR').latest().exec())['value']
+      const quantity = arweave.ar.arToWinston(calc(1, AR).toString())
+      const contractState = await pst.currentState()
+
+      const holder = selectWeightedPstHolder(contractState.balances)
+      tx = await arweave.createTransaction({ data, quantity, target: holder })
+    }
     tags.map(({ name, value }) => tx.addTag(name, value))
+
     await arweave.transactions.sign(tx)
     // 2. check reward and wallet balance
-    if (Number(tx.reward) > Number(balance)) {
+    if (Number(tx.reward) + Number(tx.quantity) > Number(balance)) {
       return { ok: false, message: 'Not Enough AR to complete request!' }
     }
     const uploader = await arweave.transactions.getUploader(tx)

@@ -216,11 +216,12 @@ arweave-multihost@^0.1.0:
     arweave "^1.10.15"
     axios "^0.21.1"
 
-arweave-wallet-connector@^0.0.26:
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/arweave-wallet-connector/-/arweave-wallet-connector-0.0.26.tgz#ff4788be00c8f0b069314242511258e86236aa4b"
-  integrity sha512-sC0xhP9BlH3PhXSlgWOQRDHB1jd6kiAIvj4DWc/E863+alTU2cVR5NaQrc5sG+U6kR3p8DJX+o0VQoo0WcLFKw==
+arweave-wallet-connector@^0.0.29:
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/arweave-wallet-connector/-/arweave-wallet-connector-0.0.29.tgz#6535c025cff23730b4118c062a453b0a862a3160"
+  integrity sha512-/wHttMiEtOz3F91UkXusOPBXEuaBgHDDL7FO0Em7AGacMVdHhSbVUM3v9tumUyay4Acjn8NdgFxMnVqJL+0Ogg==
   dependencies:
+    arweave "^1.10.23"
     mitt "^3.0.0"
     typescript-is "^0.19.0"
 

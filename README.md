@@ -566,6 +566,38 @@ query {
 }
 ```
 
+### Get Single Transaction
+
+In order to view our newly saved transaction, we need to implement the getTx function in the `src/arweave.js` file.
+
+`src/arweave.js`
+
+``` js
+export const getTx = async (id) => {
+  try {
+    const result = await arweave.api.post('graphql', {
+      query: `
+  query {
+    transaction(id: "${id}") {
+      id
+      owner {
+        address
+      }
+      tags {
+        name
+        value
+      }
+    }
+  }
+      `
+    })
+    return result?.data?.data?.transaction
+  } catch (e) {
+    return null
+  }
+}
+```
+
 ---
 
 ## Deploying to Arweave.net 
