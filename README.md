@@ -341,7 +341,7 @@ export const activity = async () => {
     const result = await arweave.api.post('graphql', {
       query: `
 query {
-  transactions (tags: { name: "Protocol", values: ["8pin"] }) {
+  transactions (first: 100, tags: { name: "Protocol", values: ["8pin"] }) {
     edges {
       node {
         id
