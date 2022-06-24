@@ -7,11 +7,51 @@ const arweave = Arweave.init({
 })
 
 export const activity = async () => {
-  return []
+  try {
+    const result = await arweave.api.post('graphql', {
+      query: `
+query {
+  transactions (first: 100, tags: { name: "Protocol", values: ["8pin"] }) {
+    edges {
+      node {
+        id
+        tags {
+          name
+          value
+        }
+      }
+    }
+  }
 }
-export const submit = async ({ data, tags }) => {
-  return {}
+    `
+    })
+    return result?.data?.data?.transactions?.edges
+  } catch (e) {
+    return []
+  }
+}
 
+export const submit = async ({ data, tags }) => {
+  // 1. Wallet not Connected!
+  if (window?.arweaveWallet === undefined) {
+    return { ok: false, message: 'Wallet not connected!' }
+  }
+
+  const balance = await getBalance(await window.arweaveWallet.getActiveAddress())
+
+  try {
+    const tx = await arweave.createTransaction({ data })
+    tags.map(({ name, value }) => tx.addTag(name, value))
+    await arweave.transactions.sign(tx)
+    // 2. check reward and wallet balance
+    if (Number(tx.reward) > Number(balance)) {
+      return { ok: false, message: 'Not Enough AR to complete request!' }
+    }
+    const uploader = await arweave.transactions.getUploader(tx)
+    return { ok: true, uploader, txId: tx.id }
+  } catch (e) {
+    return { ok: false, txId: tx.id, message: e.message }
+  }
 }
 
 export const waitfor = async (txId) => {

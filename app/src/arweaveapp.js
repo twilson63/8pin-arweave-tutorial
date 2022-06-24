@@ -8,5 +8,14 @@ const wallet = new ArweaveWebWallet({
 wallet.setUrl('arweave.app')
 
 export const connect = async () => {
-  return ''
+  const result = await wallet.connect()
+  if (result.ready) {
+    const addr = arweaveWallet.getActiveAddress()
+    localStorage.setItem('address', addr)
+    localStorage.setItem('wallet', 'arweave.app')
+    return addr
+  }
+  else {
+    return null
+  }
 }
